@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Detail — TheMart</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}"/>
+  <link rel="stylesheet" th:href="@{/css/order-detail.css}"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<div class="od-page">
+
+  <a th:href="@{/orders}" class="od-back">
+    <i class="fas fa-arrow-left"></i> Back to My Orders
+  </a>
+
+  <!-- Hero Banner -->
+  <div class="od-hero">
+    <div class="od-hero-left">
+      <div class="od-hero-num"
+           th:text="'Order #' + ${order.orderNumber}">Order #—</div>
+      <div class="od-hero-date">
+        <i class="fas fa-calendar-alt"></i>
+        <span th:text="${#temporals.format(order.createdAt, 'dd MMM yyyy, hh:mm a')}">—</span>
+      </div>
+    </div>
+    <span th:class="'od-badge ' + (${order.status.name() == 'DELIVERED'} ? 'od-badge-delivered' :
+                   (${order.status.name() == 'CANCELLED'}                ? 'od-badge-cancelled'  :
+                   (${order.status.name() == 'SHIPPED'}                  ? 'od-badge-shipped'    :
+                                                                            'od-badge-pending')))"
+          th:text="${order.status}">PENDING</span>
+  </div>
+
+  <!-- Order Progress -->
+  <div class="od-card od-card-full">
+    <div class="od-card-label"><i class="fas fa-route"></i> Order Progress</div>
+    <div class="od-steps">
+      <div class="od-step">
+        <div class="od-step-dot done"><i class="fas fa-check"></i></div>
+        <span class="od-step-label done">Placed</span>
+      </div>
+      <div th:class="'od-step' + (${order.status.name() == 'PROCESSING' or order.status.name() == 'SHIPPED' or order.status.name() == 'DELIVERED'} ? '' : '')">
+        <div th:class="'od-step-dot ' + (${order.status.name() == 'SHIPPED' or order.status.name() == 'DELIVERED'} ? 'done' :
+                       (${order.status.name() == 'PROCESSING'} ? 'active' : ''))">
+          <i class="fas fa-clock"></i>
+        </div>
+        <span th:class="'od-step-label ' + (${order.status.name() == 'SHIPPED' or order.status.name() == 'DELIVERED'} ? 'done' :
+                        (${order.status.name() == 'PROCESSING'} ? 'active' : ''))">
+          Processing
+        </span>
+      </div>
+      <div class="od-step">
+        <div th:class="'od-step-dot ' + (${order.status.name() == 'DELIVERED'} ? 'done' :
+                       (${order.status.name() == 'SHIPPED'}                     ? 'active' : ''))">
+          <i class="fas fa-truck"></i>
+        </div>
+        <span th:class="'od-step-label ' + (${order.status.name() == 'DELIVERED'} ? 'done' :
+                        (${order.status.name() == 'SHIPPED'}                       ? 'active' : ''))">
+          Shipped
+        </span>
+      </div>
+      <div class="od-step">
+        <div th:class="'od-step-dot ' + (${order.status.name() == 'DELIVERED'} ? 'done' : '')">
+          <i class="fas fa-box-open"></i>
+        </div>
+        <span th:class="'od-step-label ' + (${order.status.name() == 'DELIVERED'} ? 'done' : '')">
+          Delivered
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="od-grid">
+
+    <!-- Items -->
+    <div class="od-card od-card-full">
+      <div class="od-card-label"><i class="fas fa-box-open"></i> Items Ordered</div>
+
+      <div th:each="item : ${order.orderItems}" class="od-item">
+  <div class="od-item-img">
+    <img th:src="${item.product.imageUrl} ?: '/images/placeholder.jpg'"
+         th:alt="${item.product.name}"/>
+  </div>
+  <div class="od-item-info">
+    <div class="od-item-name" th:text="${item.product.name}">—</div>
+    <div class="od-item-sub"
+         th:text="'$' + ${#numbers.formatDecimal(item.unitPrice, 1, 2)} + ' × ' + ${item.quantity}">—</div>
+  </div>
+  <span class="od-item-price"
+        th:text="'$' + ${#numbers.formatDecimal(item.totalPrice, 1, 2)}">—</span>
+</div>
+
+
+      <div class="od-totals">
+        <div class="od-total-row">
+          <span><i class="fas fa-truck"></i> Delivery</span>
+          <span th:classappend="${order.deliveryCharge.compareTo(T(java.math.BigDecimal).ZERO) == 0} ? ' free' : ''"
+                th:text="${order.deliveryCharge.compareTo(T(java.math.BigDecimal).ZERO) == 0 ? 'FREE' : '$' + #numbers.formatDecimal(order.deliveryCharge, 1, 2)}">—</span>
+        </div>
+        <div class="od-grand">
+          <span>Order Total</span>
+          <span th:text="'$' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Address -->
+    <div class="od-card">
+      <div class="od-card-label"><i class="fas fa-location-dot"></i> Delivery Address</div>
+      <div class="od-addr-name" th:text="${order.shippingName}">—</div>
+      <div class="od-addr-line">
+        <span th:text="${order.shippingAddress}">—</span><br/>
+        <span th:text="${order.shippingCity} + ' - ' + ${order.shippingPincode}">—</span><br/>
+        <i class="fas fa-phone"></i>
+        <span th:text="${order.shippingPhone}">—</span>
+      </div>
+    </div>
+
+    <!-- Payment -->
+    <div class="od-card">
+      <div class="od-card-label"><i class="fas fa-credit-card"></i> Payment</div>
+      <div class="od-pay-row">
+        <span class="od-pay-lbl"><i class="fas fa-wallet"></i> Method</span>
+        <span class="od-pay-val" th:text="${order.paymentMethod}">—</span>
+      </div>
+      <div class="od-pay-row">
+        <span class="od-pay-lbl"><i class="fas fa-circle-check"></i> Status</span>
+        <span th:class="'od-pay-badge ' + (${order.paymentStatus.name() == 'PAID'} ? 'badge-yes' :
+                        (${order.paymentStatus.name() == 'FAILED'}                  ? 'badge-no'  : 'badge-pending-sm'))"
+              th:text="${order.paymentStatus}">—</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div th:replace="~{fragments/layout :: brand-directory}"></div>
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

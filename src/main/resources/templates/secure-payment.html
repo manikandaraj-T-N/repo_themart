@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Secure Payment – TheMart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" th:href="@{/css/home.css}"/>
+  <link rel="stylesheet" th:href="@{/css/secure.css}"/>
+
+</head>
+<body>
+
+  <div th:replace="~{fragments/layout :: topbar}"></div>
+  <div th:replace="~{fragments/layout :: header}"></div>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a th:href="@{/home}">Home</a>
+    <span>›</span>
+    <span style="color:var(--dark);font-weight:600;">Secure Payment</span>
+  </div>
+
+  <!-- Hero -->
+  <section class="sp-hero">
+    <h1>Secure <span>Payment</span></h1>
+    <p>Shop with confidence. Every transaction on TheMart is protected with industry-leading security.</p>
+    <div class="sp-methods">
+      <div class="sp-method-badge"><i class="fas fa-credit-card"></i> VISA</div>
+      <div class="sp-method-badge"><i class="fab fa-google-pay"></i> Google Pay</div>
+      <div class="sp-method-badge"><i class="fab fa-amazon-pay"></i> Amazon Pay</div>
+      <div class="sp-method-badge"><i class="fab fa-paypal"></i> PayPal</div>
+      <div class="sp-method-badge"><i class="fas fa-credit-card"></i> Mastercard</div>
+    </div>
+  </section>
+
+  <div class="sp-content">
+
+    <!-- Feature Cards -->
+    <div class="sp-features">
+      <div class="sp-feature-card">
+        <div class="sp-feature-icon"><i class="fas fa-lock"></i></div>
+        <h3>SSL Encryption</h3>
+        <p>All data transmitted between you and TheMart is encrypted using 256-bit SSL technology.</p>
+      </div>
+      <div class="sp-feature-card">
+        <div class="sp-feature-icon"><i class="fas fa-shield-alt"></i></div>
+        <h3>Fraud Protection</h3>
+        <p>Our systems continuously monitor transactions to detect and prevent fraudulent activity.</p>
+      </div>
+      <div class="sp-feature-card">
+        <div class="sp-feature-icon"><i class="fas fa-user-shield"></i></div>
+        <h3>Data Privacy</h3>
+        <p>We never store your full card details. Your payment information stays private and secure.</p>
+      </div>
+      <div class="sp-feature-card">
+        <div class="sp-feature-icon"><i class="fas fa-check-circle"></i></div>
+        <h3>PCI Compliant</h3>
+        <p>TheMart is fully PCI DSS compliant, meeting the highest standards for payment security.</p>
+      </div>
+      <div class="sp-feature-card">
+        <div class="sp-feature-icon"><i class="fas fa-undo-alt"></i></div>
+        <h3>Easy Refunds</h3>
+        <p>Refunds are processed securely back to your original payment method within 7–10 days.</p>
+      </div>
+      <div class="sp-feature-card">
+        <div class="sp-feature-icon"><i class="fas fa-headset"></i></div>
+        <h3>24/7 Support</h3>
+        <p>Our support team is always available to help resolve any payment-related concerns.</p>
+      </div>
+    </div>
+
+    <div class="sp-section">
+      <h2><i class="fas fa-credit-card"></i> Accepted Payment Methods</h2>
+      <p>We support a wide range of secure payment options to make your shopping experience convenient.</p>
+      <div class="sp-logos">
+        <div class="sp-logo visa">VISA</div>
+        <div class="sp-logo master">Mastercard</div>
+        <div class="sp-logo gpay">G Pay</div>
+        <div class="sp-logo amazon">amazon pay</div>
+        <div class="sp-logo paypal">PayPal</div>
+      </div>
+    </div>
+
+    <div class="sp-section">
+      <h2><i class="fas fa-lock"></i> How We Protect Your Payment</h2>
+      <p>Security is our top priority. Here's how we keep every transaction safe:</p>
+      <ul>
+        <li>All pages on TheMart use HTTPS with 256-bit SSL encryption.</li>
+        <li>Card details are tokenized and never stored on our servers.</li>
+        <li>Payments are processed through PCI DSS Level 1 certified gateways.</li>
+        <li>Two-factor authentication is available for all registered accounts.</li>
+        <li>Real-time fraud monitoring detects suspicious transactions automatically.</li>
+      </ul>
+    </div>
+
+    <div class="sp-section">
+      <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+
+      <p><strong>Is it safe to save my card on TheMart?</strong></p>
+      <p>Yes. We use tokenization — your actual card number is never stored on our servers. Only a secure token is saved for future purchases.</p>
+
+      <p><strong>What should I do if my payment fails?</strong></p>
+      <p>Check your card details and ensure sufficient funds are available. If the issue persists, try a different payment method or contact your bank. You can also reach our support team.</p>
+
+      <p><strong>When will my refund be credited?</strong></p>
+      <p>Refunds are typically processed within 7–10 business days after we receive the returned item. The time to reflect in your account depends on your bank or payment provider.</p>
+
+      <p><strong>Are my transactions monitored for fraud?</strong></p>
+      <div class="sp-highlight">
+        Yes. Our advanced fraud detection systems monitor all transactions in real time. If anything suspicious is detected, we will contact you immediately and may temporarily hold the transaction for your protection.
+      </div>
+    </div>
+
+    <div class="sp-section">
+      <h2><i class="fas fa-envelope"></i> Need Help?</h2>
+      <p>If you have any questions or concerns about payment security, our team is here to help:</p>
+      <div class="contact-box">
+        <span>
+          <i class="fas fa-envelope" style="color:var(--pink);margin-right:8px;"></i>
+          <a href="mailto:support@themart.com">support@themart.com</a>
+        </span>
+        <span>
+          <i class="fas fa-phone-alt" style="color:var(--pink);margin-right:8px;"></i>
+          <a href="tel:+919876543210">+91 98765 43210</a>
+        </span>
+        <span>
+          <i class="fas fa-map-marker-alt" style="color:var(--pink);margin-right:8px;"></i>
+          123 Fashion Street, Coimbatore, Tamil Nadu, India — 641001
+        </span>
+      </div>
+    </div>
+
+    <div class="sp-updated">
+      Last updated: May 2026 &nbsp;·&nbsp; © 2026 TheMart Pvt. Ltd. All rights reserved.
+    </div>
+
+  </div>
+
+  <div th:replace="~{fragments/layout :: brand-directory}"></div>
+  <div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

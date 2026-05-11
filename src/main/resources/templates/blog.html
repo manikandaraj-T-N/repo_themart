@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blog — TheMart</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}"/>
+  <link rel="stylesheet" th:href="@{/css/blog.css}"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<!-- Breadcrumb -->
+<div class="bl-breadcrumb">
+  <a th:href="@{/home}"><i class="fas fa-home"></i></a>
+  <span class="bl-sep">›</span>
+  <span>Blog</span>
+</div>
+
+<!-- Hero Header -->
+<div class="bl-hero">
+  <div class="bl-hero-inner">
+    <h1 class="bl-hero-title">TheMart</h1>
+    <p class="bl-hero-sub">
+      Discover the latest in fashion, style tips, and trend stories.<br/>
+      These are the people, stories, and ideas that define modern fashion.
+    </p>
+  </div>
+</div>
+
+<div class="bl-page">
+  <div class="bl-inner">
+
+    <!-- Category Filter Tabs -->
+    <div class="bl-tabs">
+      <a th:href="@{/blog}"
+         th:classappend="${currentCat == null} ? ' bl-tab-active'"
+         class="bl-tab">All</a>
+      <a th:each="cat : ${categories}"
+         th:href="@{/blog(category=${cat})}"
+         th:text="${cat}"
+         th:classappend="${currentCat == cat} ? ' bl-tab-active'"
+         class="bl-tab">Category</a>
+    </div>
+
+    <!-- Latest Section (top 3) -->
+    <div class="bl-section-title">The Latest</div>
+
+    <div class="bl-latest-grid">
+      <div class="bl-latest-card" th:each="b : ${latestBlogs}">
+        <a th:href="@{/blog/{id}(id=${b.id})}" class="bl-img-wrap">
+          <img th:src="${b.imageUrl} ?: '/images/blog-placeholder.jpg'"
+               th:alt="${b.title}"/>
+        </a>
+        <div class="bl-latest-body">
+          <a th:href="@{/blog/{id}(id=${b.id})}"
+             class="bl-latest-title"
+             th:text="${b.title}">Title</a>
+          <div class="bl-latest-meta">
+            <span class="bl-tag-pill" th:text="${b.category}">Category</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- All Posts Grid -->
+    <div class="bl-section-title" style="margin-top:56px;">All Posts</div>
+
+    <div class="bl-grid" th:if="${!#lists.isEmpty(blogs)}">
+      <div class="bl-card" th:each="b : ${blogs}">
+        <a th:href="@{/blog/{id}(id=${b.id})}" class="bl-card-img-wrap">
+          <img th:src="${b.imageUrl} ?: '/images/blog-placeholder.jpg'"
+               th:alt="${b.title}"/>
+        </a>
+        <div class="bl-card-body">
+          <a th:href="@{/blog/{id}(id=${b.id})}"
+             class="bl-card-title"
+             th:text="${b.title}">Title</a>
+          <div class="bl-card-meta">
+            <span class="bl-tag-pill" th:text="${b.category}">Category</span>
+            <span class="bl-card-date"
+                  th:text="${#temporals.format(b.createdAt, 'dd MMM yyyy')}">Date</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div th:if="${#lists.isEmpty(blogs)}" class="bl-empty">
+      <i class="fas fa-newspaper"></i>
+      <p>No posts found in this category.</p>
+      <a th:href="@{/blog}" class="bl-btn-all">View All Posts</a>
+    </div>
+
+    <!-- Pagination -->
+    <div class="bl-pagination" th:if="${totalPages > 1}">
+      <a th:href="@{/blog(page=${currentPage - 1}, category=${currentCat})}"
+         th:classappend="${currentPage == 0} ? ' bl-page-disabled'"
+         class="bl-page-btn">
+        <i class="fas fa-chevron-left"></i>
+      </a>
+
+      <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:href="@{/blog(page=${i}, category=${currentCat})}"
+           th:text="${i + 1}"
+           th:classappend="${i == currentPage} ? ' bl-page-active'"
+           class="bl-page-num">1</a>
+      </span>
+
+      <a th:href="@{/blog(page=${currentPage + 1}, category=${currentCat})}"
+         th:classappend="${currentPage == totalPages - 1} ? ' bl-page-disabled'"
+         class="bl-page-btn">
+        <i class="fas fa-chevron-right"></i>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<div th:replace="~{fragments/layout :: brand-directory}"></div>
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

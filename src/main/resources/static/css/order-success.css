@@ -1,0 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --pink: #FF8F9C;
+  --pink-light: #FFD6DB;
+  --pink-dark: #e87585;
+  --white: #FFFFFF;
+  --dark: #484848;
+  --gray: #888;
+  --light: #f8f8f8;
+  --border: #ebebeb;
+}
+
+
+.success-page {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.success-icon-wrap {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: var(--pink-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.success-icon-wrap svg {
+  width: 40px;
+  height: 40px;
+  stroke: var(--pink);
+  stroke-width: 2.5px;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.success-page h1 {
+  color: var(--pink);
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.success-page .subtext {
+  color: var(--gray);
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+.order-card {
+  background: #fff5f6;
+  border: 1px solid var(--pink-light);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 380px;
+  margin: 0 auto 32px;
+  text-align: left;
+}
+
+.order-card .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.order-card .row .lbl {
+  color: var(--gray);
+}
+
+.order-card .row strong {
+  color: var(--dark);
+  font-weight: 600;
+}
+
+.order-card .row .free {
+  color: var(--pink);
+  font-weight: 600;
+}
+
+.order-divider {
+  border: none;
+  border-top: 1px solid var(--pink-light);
+  margin: 12px 0;
+}
+
+.order-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 4px;
+}
+
+.order-total span {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--pink);
+}
+
+.status-badge {
+  display: inline-block;
+  background: var(--pink-light);
+  color: #c05060;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 14px;
+  letter-spacing: 0.4px;
+}
+
+.btn-continue {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--pink);
+  color: var(--white);
+  padding: 13px 30px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  transition: background 0.2s;
+}
+
+.btn-continue:hover {
+  background: #e07080;
+}

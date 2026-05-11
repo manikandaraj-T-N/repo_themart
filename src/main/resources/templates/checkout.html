@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — TheMart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" th:href="@{/css/home.css}"/>
+  <link rel="stylesheet" th:href="@{/css/cart.css}"/>
+  <link rel="stylesheet" th:href="@{/css/checkout.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<main class="cart-page">
+
+  <!-- Breadcrumb -->
+  <div class="cart-breadcrumb">
+    <a th:href="@{/}">Home</a> <span>/</span>
+    <a th:href="@{/cart}">Cart</a> <span>/</span>
+    <span>Checkout</span>
+  </div>
+
+  <h2 class="cart-page-title">Checkout</h2>
+
+  <!-- Flash messages -->
+  <div th:if="${errorMessage}" class="alert alert-error">
+    <i class="fas fa-circle-exclamation"></i>
+    <span th:text="${errorMessage}">Error</span>
+  </div>
+
+  <div class="cart-layout">
+
+    <!-- Left: Shipping + Payment -->
+    <div class="cart-card">
+
+      <!-- Shipping Address -->
+      <div class="checkout-section-title">
+        <i class="fas fa-map-marker-alt"></i> Shipping Address
+      </div>
+
+      <form th:action="@{/checkout}" method="post" id="checkoutForm">
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Full Name <span class="req">*</span></label>
+            <input type="text" name="shippingName"
+                   th:value="${user.name}"
+                   placeholder="John Doe" required/>
+          </div>
+
+          <div class="form-group">
+            <label>Phone <span class="req">*</span></label>
+            <input type="text" name="shippingPhone"
+                   th:value="${user.phone}"
+                   placeholder="+1 000 000 0000" required/>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Address <span class="req">*</span></label>
+            <textarea name="shippingAddress" rows="2"
+                      placeholder="Street address, apartment, suite…"
+                      required th:text="${user.address}"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>City <span class="req">*</span></label>
+            <input type="text" name="shippingCity"
+                   th:value="${user.city}"
+                   placeholder="City" required/>
+          </div>
+
+          <div class="form-group">
+            <label>Pincode <span class="req">*</span></label>
+            <input type="text" name="shippingPincode"
+                   th:value="${user.pincode}"
+                   placeholder="000000" required/>
+          </div>
+
+        </div>
+
+        <!-- Payment Method -->
+        <div class="checkout-section-title" style="margin-top:28px;">
+          <i class="fas fa-credit-card"></i> Payment Method
+        </div>
+
+        <div class="payment-options">
+          <label class="payment-option">
+            <input type="radio" name="paymentMethod" value="COD" checked/>
+            <span>
+              <i class="fas fa-money-bill-wave"></i>
+              Cash on Delivery
+            </span>
+          </label>
+          <label class="payment-option">
+            <input type="radio" name="paymentMethod" value="UPI"/>
+            <span>
+              <i class="fas fa-qrcode"></i>
+              UPI / Online Payment
+            </span>
+          </label>
+        </div>
+
+        <!-- Hidden totals -->
+        <!-- <input type="hidden" name="subtotal"       th:value="${subtotal}"/>
+        <input type="hidden" name="deliveryCharge" th:value="${delivery}"/>
+        <input type="hidden" name="total"          th:value="${total}"/> -->
+
+      </form>
+      
+    </div>
+
+    <!-- Right: Order Summary -->
+    <div class="cart-summary">
+      <div class="summary-title">Order Summary</div>
+
+      <!-- Items list -->
+      <div th:each="item : ${cartItems}" class="order-item-row">
+        <span class="order-item-name"
+              th:text="${item.product.name} + ' × ' + ${item.quantity}">Item</span>
+        <span class="order-item-price"
+              th:text="'$' + ${#numbers.formatDecimal(item.product.price * item.quantity, 1, 2)}">$0.00</span>
+      </div>
+
+      <div class="summary-divider" style="margin-top:8px;"></div>
+
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span th:text="'$' + ${#numbers.formatDecimal(subtotal, 1, 2)}">$0.00</span>
+      </div>
+
+      <div class="summary-row">
+        <span>Delivery</span>
+        <span th:if="${delivery == 0}" class="badge-yes">FREE</span>
+        <span th:unless="${delivery == 0}"
+              th:text="'$' + ${#numbers.formatDecimal(delivery, 1, 2)}">$5.00</span>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <div class="summary-row total">
+        <span>Total</span>
+        <span th:text="'$' + ${#numbers.formatDecimal(total, 1, 2)}">$0.00</span>
+      </div>
+
+      <!-- Place Order Button -->
+      <button type="button" onclick="handlePlaceOrder()" class="btn-checkout">
+        Place Order <i class="fas fa-check"></i>
+      </button>
+
+      <!-- Hidden Razorpay verify form -->
+      <form id="paymentVerifyForm" th:action="@{/payment/verify}" method="post" style="display:none;">
+        <input type="hidden" name="razorpay_order_id"   id="rzp_order_id"/>
+        <input type="hidden" name="razorpay_payment_id" id="rzp_payment_id"/>
+        <input type="hidden" name="razorpay_signature"  id="rzp_signature"/>
+        <input type="hidden" name="orderId"             id="rzp_db_order_id"/>
+      </form>
+
+      <!-- Trust Badges -->
+      <div class="trust-badges" style="margin-top:20px;">
+        <div class="trust-item"><i class="fas fa-lock"></i><span>Secure</span></div>
+        <div class="trust-item"><i class="fas fa-truck"></i><span>Fast Delivery</span></div>
+        <div class="trust-item"><i class="fas fa-shield-halved"></i><span>Protected</span></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div th:replace="~{fragments/layout :: brand-directory}"></div>
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+<script th:inline="javascript">
+  const razorpayKeyId = /*[[${razorpayKeyId}]]*/ '';
+
+  function handlePlaceOrder() {
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+    if (paymentMethod === 'COD') {
+      document.getElementById('checkoutForm').submit();
+      return;
+    }
+
+    const formData = new FormData(document.getElementById('checkoutForm'));
+
+    const csrfToken  = document.querySelector('meta[name="_csrf"]')?.content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+    const headers = {};
+    if (csrfHeader && csrfToken) headers[csrfHeader] = csrfToken;
+
+    fetch('/checkout/initiate', {
+      method:  'POST',
+      headers: headers,
+      body:    formData
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Error: ' + res.status);
+      return res.json();
+    })
+    .then(data => {
+      if (data.error) { alert('Error: ' + data.error); return; }
+
+      const options = {
+        key:         razorpayKeyId,
+        amount:      data.amount,
+        currency:    'USD',
+        name:        'TheMart',
+        description: 'Order #' + data.orderNumber,
+        order_id:    data.razorpayOrderId,
+        prefill: {
+          name:    formData.get('shippingName'),
+          contact: formData.get('shippingPhone')
+        },
+        theme: { color: '#FF8F9C' },
+        handler: function(response) {
+          document.getElementById('rzp_order_id').value    = response.razorpay_order_id;
+          document.getElementById('rzp_payment_id').value  = response.razorpay_payment_id;
+          document.getElementById('rzp_signature').value   = response.razorpay_signature;
+          document.getElementById('rzp_db_order_id').value = data.orderId;
+          document.getElementById('paymentVerifyForm').submit();
+        },
+        modal: {
+          ondismiss: function() { alert('Payment cancelled.'); }
+        }
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.open();
+    })
+    .catch(err => {
+      alert('Something went wrong: ' + err.message);
+      console.error(err);
+    });
+  }
+
+  // User dropdown
+  // function toggleUserMenu(e) {
+  //   e.stopPropagation();
+  //   document.getElementById('userDropdown').classList.toggle('open');
+  // }
+ 
+ 
+ 
+  document.addEventListener('click', function(e) {
+    const d = document.getElementById('userDropdown');
+    if (d && !e.target.closest('.user-menu')) d.classList.remove('open');
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      const d = document.getElementById('userDropdown');
+      if (d) d.classList.remove('open');
+    }
+  });
+</script>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</body>
+</html>

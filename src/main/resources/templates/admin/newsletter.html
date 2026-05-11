@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Newsletter Subscribers — TheMart Admin</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-logo">TheMart</div>
+    <nav>
+      <a th:href="@{/admin/dashboard}" ><i class="fas fa-home"></i> Dashboard</a>
+      <a th:href="@{/admin/products}"><i class="fas fa-box"></i> Products</a>
+      <a th:href="@{/admin/categories}"><i class="fas fa-tags"></i> Categories</a>
+      <a th:href="@{/admin/orders}"><i class="fas fa-bag-shopping"></i> Orders</a>
+      <a th:href="@{/admin/blogs}"><i class="fas fa-newspaper"></i> Blogs</a>
+      <a th:href="@{/admin/newsletter}" class="active"><i class="fas fa-envelope-open-text"></i> Newsletter</a>
+      <a th:href="@{/home}"><i class="fas fa-eye"></i> View Site</a>
+      <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <h1 class="admin-page-title">
+        <i class="fas fa-envelope-open-text"></i> Newsletter Subscribers
+      </h1>
+      <span style="font-size:14px; color:#777;">
+        Total: <strong th:text="${#lists.size(subscribers)}">0</strong> subscribers
+      </span>
+    </div>
+
+    <!-- Empty state -->
+    <div th:if="${#lists.isEmpty(subscribers)}"
+         style="text-align:center; padding:60px 20px; color:#999;">
+      <i class="fas fa-envelope-open-text" style="font-size:48px; margin-bottom:16px; display:block;"></i>
+      <p>No subscribers yet.</p>
+    </div>
+
+    <!-- Subscribers Table -->
+    <div class="admin-card" th:if="${!#lists.isEmpty(subscribers)}">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Email</th>
+            <th>Subscribed At</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="sub, i : ${subscribers}">
+            <td th:text="${i.count}">1</td>
+            <td th:text="${sub.email}">email@example.com</td>
+            <td th:text="${#temporals.format(sub.subscribedAt, 'dd MMM yyyy, hh:mm a')}">Date</td>
+            <td>
+              <form th:action="@{/admin/newsletter/delete/{id}(id=${sub.id})}"
+                    method="post" style="display:inline;">
+                <button type="submit" class="btn-delete"
+                        onclick="return confirm('Remove this subscriber?')">
+                  <i class="fas fa-trash"></i> Remove
+                </button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>

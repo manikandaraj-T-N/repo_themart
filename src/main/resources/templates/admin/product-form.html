@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Form - TheMart Admin</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="admin-layout">
+
+  <!-- ── Sidebar ── -->
+
+  <aside class="admin-sidebar">
+    <div class="admin-logo">The<span>Mart</span></div>
+    <nav>
+      <a th:href="@{/admin/dashboard}"><i class="fas fa-home"></i> Dashboard</a>
+      <a th:href="@{/admin/products}" class="active"><i class="fas fa-box"></i> Products</a>
+      <a th:href="@{/admin/categories}"><i class="fas fa-tags"></i> Categories</a>
+      <a th:href="@{/admin/orders}"><i class="fas fa-bag-shopping"></i> Orders</a>
+      <a th:href="@{/admin/blogs}"><i class="fas fa-newspaper"></i> Blogs</a>
+      <a th:href="@{/admin/newsletter}"><i class="fas fa-envelope-open-text"></i> Newsletter</a>
+      <a th:href="@{/home}"><i class="fas fa-eye"></i> View Site</a>
+      <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="admin-main">
+
+    <!-- Page Header -->
+    <div class="admin-topbar">
+      <div>
+        <div class="admin-breadcrumb">
+          <a th:href="@{/admin/products}">Products</a>
+          <i class="fas fa-chevron-right"></i>
+          <span th:text="${product.id != null} ? 'Edit Product' : 'Add New Product'">Product Form</span>
+        </div>
+        <h1 class="admin-page-title"
+            th:text="${product.id != null} ? 'Edit Product' : 'Add New Product'">
+          Product Form
+        </h1>
+      </div>
+      <a th:href="@{/admin/products}" class="btn-cancel" style="height:fit-content;">
+        <i class="fas fa-arrow-left"></i> Back to Products
+      </a>
+    </div>
+
+    <div class="admin-card form-card">
+
+      <form th:action="@{/admin/products/save}"
+            th:object="${product}"
+            method="post"
+            enctype="multipart/form-data">
+
+        <!-- Hidden fields -->
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{imageUrl}"/>
+
+        <!-- ── Section: Basic Info ── -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <i class="fas fa-info-circle"></i> Basic Information
+          </div>
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label>Product Name <span class="required">*</span></label>
+              <input type="text" th:field="*{name}"
+                     placeholder="e.g. Men's Winter Jacket" required/>
+            </div>
+
+            <div class="form-group">
+              <label>Category</label>
+              <select title="cat-id" name="categoryId">
+                <option value="">-- Select Category --</option>
+                <option th:each="cat : ${categories}"
+                        th:value="${cat.id}"
+                        th:text="${cat.name}"
+                        th:selected="${product.category?.id == cat.id}">
+                </option>
+              </select>
+            </div>
+
+           
+
+            <div class="form-group full-width">
+              <label>Tags <small>(comma-separated)</small></label>
+              <input type="text" th:field="*{tags}"
+                     placeholder="e.g. Sale, New, Trending, Summer"/>
+            </div>
+
+            <div class="form-group full-width">
+              <label>Description</label>
+              <textarea th:field="*{description}"
+                        rows="4"
+                        placeholder="Write a short product description..."></textarea>
+            </div>
+
+            <!-- Add inside the Pricing & Stock form-section grid -->
+
+<div class="form-group">
+  <label>Discount Percentage <small>(optional, auto-calc if blank)</small></label>
+  <div class="input-prefix-wrap">
+    <span class="input-prefix">%</span>
+    <input type="number" th:field="*{discountPercentage}"
+           min="0" max="100" placeholder="e.g. 15"/>
+  </div>
+</div>
+
+<!-- Add inside Basic Info form-section grid -->
+<div class="form-group full-width">
+  <label>Short Description 
+    <!-- <small>(shown on product card hover)</small> -->
+  </label>
+  <input type="text" th:field="*{shortDescription}"
+         placeholder="e.g. Premium quality winter jacket"/>
+</div>
+
+          </div>
+        </div>
+
+        <!-- ── Section: Pricing & Stock ── -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <i class="fas fa-tag"></i> Pricing & Stock
+          </div>
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label>Price ($) <span class="required">*</span></label>
+              <div class="input-prefix-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" th:field="*{price}"
+                       step="0.01" placeholder="0.00" required/>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Original Price ($) <small>for Sale badge</small></label>
+              <div class="input-prefix-wrap">
+                <span class="input-prefix">$</span>
+                <input type="number" th:field="*{originalPrice}"
+                       step="0.01" placeholder="0.00"/>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Stock Quantity <span class="required">*</span></label>
+              <input type="number" th:field="*{stockQuantity}"
+                     placeholder="0" required/>
+            </div>
+
+            <div class="form-group">
+              <label>Unit</label>
+              <select th:field="*{unit}">
+                <option value="piece">Piece</option>
+                <option value="kg">kg</option>
+                <option value="dozen">Dozen</option>
+                <!-- <option value="litre">Litre</option> -->
+                <option value="pack">Pack</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Rating <small>(1.0 – 5.0)</small></label>
+              <input type="number" th:field="*{rating}"
+                     step="0.1" min="1" max="5"
+                     placeholder="e.g. 4.5"/>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── Section: Product Image ── -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <i class="fas fa-image"></i> Product Image
+          </div>
+
+          <div class="image-upload-wrap">
+            <div class="image-upload-box" id="uploadBox"
+                 onclick="document.getElementById('imageFileInput').click()">
+              <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+              <div class="upload-text">Click to upload image</div>
+              <div class="upload-hint">PNG, JPG, WEBP — max 5MB</div>
+              <input id="imageFileInput" type="file" name="imageFile"
+                     accept="image/*" style="display:none"
+                     onchange="previewImage(this, 'productPreview')"/>
+            </div>
+
+            <div class="image-preview-wrap" id="previewWrap"
+                 th:style="${product.imageUrl != null} ? 'display:flex' : 'display:none'">
+              <img id="productPreview" class="image-preview"
+                   th:src="${product.imageUrl}"
+                   alt="Product Preview"/>
+              <button title="remove" type="button" class="remove-preview-btn"
+                      onclick="removePreview()">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Section: Visibility ── -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <i class="fas fa-toggle-on"></i> Visibility & Flags
+          </div>
+          <div class="checkboxes">
+            <label class="checkbox-label">
+              <input type="checkbox" name="isFeatured"
+                     th:checked="${product.isFeatured}"/>
+              <span class="checkbox-text">
+                <!-- <span class="cb-icon">⭐</span> -->
+                <span>
+                  <strong>Featured Product</strong>
+                  <small>Appears in the New Products section on the home page</small>
+                </span>
+              </span>
+            </label>
+
+            <!-- <label class="checkbox-label">
+              <input type="checkbox" name="isOrganic"
+                     th:checked="${product.isOrganic}"/>
+              <span class="checkbox-text">
+                <span class="cb-icon">🌿</span>
+                <span>
+                  <strong>Organic</strong>
+                  <small>Mark this product as organic</small>
+                </span>
+              </span>
+            </label> -->
+            
+            <label class="checkbox-label">
+              <input type="checkbox" name="isActive"
+                     th:checked="${product.isActive == null or product.isActive}"/>
+              <span class="checkbox-text">
+                <!-- <span class="cb-icon">✅</span> -->
+                <span>
+                  <strong>Active</strong>
+                  <small>Product is visible on the site</small>
+                </span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- ── Form Actions ── -->
+        <div class="form-actions">
+          <a th:href="@{/admin/products}" class="btn-cancel">
+            <i class="fas fa-times"></i> Cancel
+          </a>
+          <button type="submit" class="btn-save">
+            <i class="fas fa-save"></i>
+            <span th:text="${product.id != null} ? 'Update Product' : 'Save Product'">Save</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </main>
+
+</div>
+
+<script>
+  function previewImage(input, previewId) {
+    const preview    = document.getElementById(previewId);
+    const previewWrap = document.getElementById('previewWrap');
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        preview.src = e.target.result;
+        previewWrap.style.display = 'flex';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  function removePreview() {
+    document.getElementById('productPreview').src   = '';
+    document.getElementById('previewWrap').style.display = 'none';
+    document.getElementById('imageFileInput').value = '';
+    // Clear the hidden imageUrl so it gets removed on save if needed
+    document.querySelector('input[name="imageUrl"]').value = '';
+  }
+</script>
+
+</body>
+</html>

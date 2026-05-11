@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title th:text="${blog.title} + ' — TheMart'">Blog Detail</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}"/>
+  <link rel="stylesheet" th:href="@{/css/blog.css}"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<!-- Breadcrumb -->
+<div class="bl-breadcrumb">
+  <a th:href="@{/home}"><i class="fas fa-home"></i></a>
+  <span class="bl-sep">›</span>
+  <a th:href="@{/blog}">Blog</a>
+  <span class="bl-sep">›</span>
+  <span th:text="${blog.title}">Post</span>
+</div>
+
+<div class="bd-page">
+  <div class="bd-inner">
+
+    <!-- Article -->
+    <article class="bd-article">
+
+      <!-- Hero Image -->
+      <div class="bd-hero-img">
+        <img th:src="${blog.imageUrl} ?: '/images/blog-placeholder.jpg'"
+             th:alt="${blog.title}"/>
+      </div>
+
+      <!-- Meta -->
+      <div class="bd-meta">
+        <span class="bl-tag-pill" th:text="${blog.category}">Category</span>
+        <span class="bd-meta-dot">•</span>
+        <span class="bd-meta-author">
+          <i class="fas fa-user"></i>
+          <span th:text="${blog.author} ?: 'Admin'">Author</span>
+        </span>
+        <span class="bd-meta-dot">•</span>
+        <span class="bd-meta-date">
+          <i class="fas fa-calendar-alt"></i>
+          <span th:text="${#temporals.format(blog.createdAt, 'dd MMMM yyyy')}">Date</span>
+        </span>
+      </div>
+
+      <!-- Title -->
+      <h1 class="bd-title" th:text="${blog.title}">Blog Title</h1>
+
+      <!-- Tags -->
+      <div class="bd-tags" th:if="${blog.tags != null}">
+        <span th:each="tag : ${#strings.arraySplit(blog.tags, ',')}"
+              class="bd-tag"
+              th:text="${#strings.trim(tag)}">tag</span>
+      </div>
+
+      <!-- Content -->
+      <div class="bd-content" th:utext="${blog.content}">
+        Content goes here...
+      </div>
+
+      <!-- Share -->
+      <div class="bd-share">
+        <span class="bd-share-label">Share this article</span>
+        <div class="bd-share-btns">
+          <a href="#" class="bd-share-btn bd-fb"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="bd-share-btn bd-tw"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="bd-share-btn bd-ig"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="bd-share-btn bd-pi"><i class="fab fa-pinterest-p"></i></a>
+        </div>
+      </div>
+
+    </article>
+
+    <!-- Related Posts -->
+    <div class="bd-related" th:if="${!#lists.isEmpty(related)}">
+      <div class="bd-related-title">Related Posts</div>
+      <div class="bl-grid">
+        <div class="bl-card" th:each="b : ${related}">
+          <a th:href="@{/blog/{id}(id=${b.id})}" class="bl-card-img-wrap">
+            <img th:src="${b.imageUrl} ?: '/images/blog-placeholder.jpg'"
+                 th:alt="${b.title}"/>
+          </a>
+          <div class="bl-card-body">
+            <a th:href="@{/blog/{id}(id=${b.id})}"
+               class="bl-card-title"
+               th:text="${b.title}">Title</a>
+            <div class="bl-card-meta">
+              <span class="bl-tag-pill" th:text="${b.category}">Category</span>
+              <span class="bd-meta-date"
+                    th:text="${#temporals.format(b.createdAt, 'dd MMM yyyy')}">Date</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bd-back-wrap">
+      <a th:href="@{/blog}" class="bd-btn-back">
+        <i class="fas fa-arrow-left"></i> Back to Blog
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<div th:replace="~{fragments/layout :: brand-directory}"></div>
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

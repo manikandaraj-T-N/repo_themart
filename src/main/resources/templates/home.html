@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Mart – ECommerce</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+
+
+<link rel="stylesheet" th:href="@{/css/home.css}"/>
+</head>
+<body>
+
+<!-- NEWSLETTER POPUP -->
+<div class="popup-overlay" id="popup">
+  <div class="popup">
+    <div class="popup-img">
+      <img th:src="@{/images/newsletter.png}" alt="Newsletter"/>
+    </div>
+    <div class="popup-content">
+      <h2>Subscribe Newsletter</h2>
+      <p>Subscribe to <strong>TheMart</strong> to get latest products and discount update.</p>
+      <input class="popup-input" type="email" id="newsletterEmail"
+             placeholder="Enter your email address..."/>
+      <div id="newsletterMsg" style="font-size:13px; margin-top:8px; min-height:18px;"></div>
+      <button class="popup-btn" onclick="subscribeNewsletter()">SUBSCRIBE</button>
+    </div>
+    <button class="popup-close"
+            onclick="document.getElementById('popup').style.display='none'">✕</button>
+  </div>
+</div>
+
+
+  <div th:replace="~{fragments/layout :: topbar}"></div>
+  <div th:replace="~{fragments/layout :: header}"></div>
+
+
+<!-- HERO CAROUSEL -->
+<section class="hero">
+  <div class="owl-carousel hero-carousel">
+
+    <!-- Slide 1 -->
+    <div class="hero-slide slide-1"
+         style="background-image:url('/images/banner-1.jpg');background-size:cover;background-position:center;">
+      <div class="slide-content">
+        <div class="slide-text">
+          <p class="slide-eyebrow">Trending Item</p>
+          <h2 class="slide-title">Women's<br>Latest<br>Fashion Sale</h2>
+          <p class="slide-price">starting at $ <strong>20.00</strong></p>
+          <a th:href="@{/shop?gender=womens}" class="slide-btn">SHOP NOW</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="hero-slide slide-2"
+         style="background-image:url('/images/banner-2.jpg');background-size:cover;background-position:center;">
+      <div class="slide-content">
+        <div class="slide-text">
+          <p class="slide-eyebrow">Sale Offer</p>
+          <h2 class="slide-title">New Fashion<br>Summer Sale</h2>
+          <p class="slide-price">starting at $ <strong>29.99</strong></p>
+          <a th:href="@{/shop?gender=womens}" class="slide-btn">SHOP NOW</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="hero-slide slide-3"
+         style="background-image:url('/images/banner-3.jpg');background-size:cover;background-position:center;">
+      <div class="slide-content">
+        <div class="slide-text">
+          <p class="slide-eyebrow">Trending Accessories</p>
+          <h2 class="slide-title">Modern<br>Sunglasses</h2>
+          <p class="slide-price">starting at $ <strong>15.00</strong></p>
+          <a th:href="@{/shop?category=sunglasses}" class="slide-btn">SHOP NOW</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CATEGORY STRIP -->
+<section class="cs-strip">
+  <div class="cs-inner">
+    <div class="owl-carousel cs-carousel">
+
+      <div class="cs-card">
+        <div class="cs-icon">
+          <img th:src="@{/images/cs4.jpg}" src="/images/cs4.jpg" alt="T-Shirts"/>
+        </div>
+        <div class="cs-info">
+          <div class="cs-top">
+            <span class="cs-name">T-SHIRTS</span>
+            <span class="cs-count">(35)</span>
+          </div>
+          <a href="#" class="cs-link">Show All</a>
+        </div>
+      </div>
+
+      <div class="cs-card">
+        <div class="cs-icon">
+          <img th:src="@{/images/cs3.jpg}" src="/images/cs3.jpg" alt="Jacket"/>
+        </div>
+        <div class="cs-info">
+          <div class="cs-top">
+            <span class="cs-name">JACKET</span>
+            <span class="cs-count">(42)</span>
+          </div>
+          <a href="#" class="cs-link">Show All</a>
+        </div>
+      </div>
+
+      <div class="cs-card">
+        <div class="cs-icon">
+          <img th:src="@{/images/cs1.jpg}" src="/images/cs1.jpg" alt="Watch"/>
+        </div>
+        <div class="cs-info">
+          <div class="cs-top">
+            <span class="cs-name">WATCH</span>
+            <span class="cs-count">(27)</span>
+          </div>
+          <a href="#" class="cs-link">Show All</a>
+        </div>
+      </div>
+
+      <div class="cs-card">
+        <div class="cs-icon">
+          <img th:src="@{/images/cs2.jpg}" src="/images/cs2.jpg" alt="Hat & Caps"/>
+        </div>
+        <div class="cs-info">
+          <div class="cs-top">
+            <span class="cs-name">HAT &amp; CAPS</span>
+            <span class="cs-count">(30)</span>
+          </div>
+          <a href="#" class="cs-link">Show All</a>
+        </div>
+      </div>
+
+    </div><!-- end owl-carousel -->
+
+    <button class="cs-nav cs-prev"><i class="fas fa-chevron-left"></i></button>
+    <button class="cs-nav cs-next"><i class="fas fa-chevron-right"></i></button>
+
+  </div>
+</section>
+
+
+<!-- DEALS OF THE MONTH -->
+<div class="deals-section">
+  <div class="deals-inner">
+    <div class="deals-text">
+      <div class="section-header">
+        <h2>Deals Of The Month</h2>
+        <p>Special offers, discounts, or promotions available for a limited time — usually for that specific month.</p>
+      </div>
+      <a href="#" class="btn-primary">SHOP NOW</a>
+      <div style="margin-top:32px;">
+        <p style="font-size:14px;font-weight:600;color:var(--dark);margin-bottom:14px;">Hurry, Before It's Too Late!</p>
+        <div class="countdown">
+          <div class="cd-block"><div class="cd-num" id="days">02</div><div class="cd-lbl">Days</div></div>
+          <div class="cd-block"><div class="cd-num" id="hours">06</div><div class="cd-lbl">Hr</div></div>
+          <div class="cd-block"><div class="cd-num" id="mins">05</div><div class="cd-lbl">Mins</div></div>
+          <div class="cd-block"><div class="cd-num" id="secs">30</div><div class="cd-lbl">Sec</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="deals-imgs">
+      <div class="deal-img-card">
+        <img th:src="@{/images/image.jpg}" alt="" src="/images/image.jpg"/>
+        <div class="deal-label">
+          <span class="sale-num">01 ─── Spring Sale</span>
+          <span class="sale-pct">30% OFF</span>
+        </div>
+      </div>
+      <div class="deal-img-card">
+     <img th:src="@{/images/image(1).jpg}" alt="" src="/images/image(1).jpg"/>
+        <div class="deal-label">
+          <span class="sale-num">02 ─── Summer Sale</span>
+          <span class="sale-pct">25% OFF</span>
+        </div>
+      </div>
+      <div class="deal-img-card">
+       <img th:src="@{/images/image(2).jpg}" alt="" src="/images/image(2).jpg"/>
+
+        <div class="deal-label">
+          <span class="sale-num">03 ─── Winter Sale</span>
+          <span class="sale-pct">40% OFF</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORY BANNERS -->
+<div class="section">
+  <div class="cat-grid">
+    <div class="cat-card">
+      <div class="cat-text">
+        <h3>Women</h3>
+        <div class="sub">Spring 2025</div>
+        <a th:href="@{/shop(gender='womens')}" class="shop-link">SHOP NOW</a>
+      </div>
+      <div class="cat-img">
+        <img th:src="@{/images/cat-img1.png}" src="/images/cat-img1.png" alt="category image 1"/>
+      </div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-text">
+        <h3>Men</h3>
+        <div class="sub">Spring 2025</div>
+        <a th:href="@{/shop(gender='mens')}" class="shop-link" style="color:var(--dark)">SHOP NOW</a>
+      </div>
+      <div class="cat-img">
+        <img th:src="@{/images/cat-img2.jpg}" src="/images/cat-img2.jpg" alt="category image 2"/>
+      </div>
+    </div>
+    <div class="cat-card">
+      <div class="cat-text">
+        <h3>Children</h3>
+        <div class="sub">Spring 2025</div>
+        <a th:href="@{/shop(gender='children')}" class="shop-link" style="color:var(--dark)">SHOP NOW</a>
+      </div>
+      <div class="cat-img">
+        <img th:src="@{/images/cat-img3.jpg}" src="/images/cat-img3.jpg" alt="category image 3"/>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- NEW ARRIVALS -->
+<div class="section">
+  <div class="section-header">
+    <h2>New Arrivals</h2>
+    <p>Recently added or newly available items — fresh styles just dropped in our collection.</p>
+  </div>
+  <div class="product-grid">
+
+    <!-- Card 1 — Shiny Dress -->
+    <div class="product-card">
+      <a th:href="@{/product/{id}(id=424)}" style="text-decoration:none;color:inherit;">
+        <div class="product-img">
+          <img th:src="@{/images/products/newarr-1.png}" alt="Shiny Dress"/>
+          <div class="add-to-cart-hover"
+               onclick="event.preventDefault(); addToCart(424)">
+            ADD TO CART
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-top">
+            <div><div class="product-name">Shiny Dress</div><div class="product-brand">Al Karam</div></div>
+            <div class="stars">★★★★★</div>
+          </div>
+          <div class="reviews">(4.1k) Customer Reviews</div>
+          <div class="product-bottom">
+            <div class="product-price">$95.50</div>
+            <div class="sold-out">Almost Sold Out</div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Card 2 — Long Dress -->
+    <div class="product-card">
+      <a th:href="@{/product/{id}(id=425)}" style="text-decoration:none;color:inherit;">
+        <div class="product-img">
+          <img th:src="@{/images/products/newarr-2.png}" alt="Long Dress"/>
+          <div class="add-to-cart-hover"
+               onclick="event.preventDefault(); addToCart(425)">
+            ADD TO CART
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-top">
+            <div><div class="product-name">Long Dress</div><div class="product-brand">Al Karam</div></div>
+            <div class="stars">★★★★★</div>
+          </div>
+          <div class="reviews">(4.1k) Customer Reviews</div>
+          <div class="product-bottom">
+            <div class="product-price">$95.50</div>
+            <div class="sold-out">Almost Sold Out</div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Card 3 — Full Sweater -->
+    <div class="product-card">
+      <a th:href="@{/product/{id}(id=426)}" style="text-decoration:none;color:inherit;">
+        <div class="product-img">
+          <img th:src="@{/images/products/newarr-3.png}" alt="Full Sweater"/>
+          <div class="add-to-cart-hover"
+               onclick="event.preventDefault(); addToCart(426)">
+            ADD TO CART
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-top">
+            <div><div class="product-name">Full Sweater</div><div class="product-brand">Al Karam</div></div>
+            <div class="stars">★★★★★</div>
+          </div>
+          <div class="reviews">(4.1k) Customer Reviews</div>
+          <div class="product-bottom">
+            <div class="product-price">$95.50</div>
+            <div class="sold-out">Almost Sold Out</div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+
+
+<!-- NEW ARRIVALS / TRENDINGS / TOP RATED LISTS -->
+<div class="lists-section">
+  <div class="lists-grid">
+
+    <!-- New Arrivals -->
+<div class="list-col">
+  <h3>New Arrivals</h3>
+  <a th:href="@{/shop(category='jackets')}" class="list-item">
+    <div class="list-thumb"><img th:src="@{/images/new-1.png}" alt=""></div>
+    <div class="list-info">
+      <div class="list-cat">Winter Wear</div>
+      <div class="list-name">MEN Yarn Fleece</div>
+      <div class="list-prices"><span class="new">$61.00</span><span class="old">$61.00</span></div>
+    </div>
+  </a>
+  <a th:href="@{/shop(category='jackets')}" class="list-item">
+    <div class="list-thumb"><img th:src="@{/images/new-2.png}" alt=""></div>
+    <div class="list-info">
+      <div class="list-cat">Winter Wear</div>
+      <div class="list-name">Men's Winter Leather jacket</div>
+      <div class="list-prices"><span class="new">$32.00</span><span class="old">$20.00</span></div>
+    </div>
+  </a>
+  <a th:href="@{/shop(category='jackets')}" class="list-item">
+    <div class="list-thumb"><img th:src="@{/images/new-3.png}" alt=""></div>
+    <div class="list-info">
+      <div class="list-cat">Jackets</div>
+      <div class="list-name">Men's Winter Leather jacket</div>
+      <div class="list-prices"><span class="new">$50.00</span><span class="old">$25.00</span></div>
+    </div>
+  </a>
+  <a th:href="@{/shop(category='shorts-jeans')}" class="list-item">
+    <div class="list-thumb"><img th:src="@{/images/new-4.png}" alt=""></div>
+    <div class="list-info">
+      <div class="list-cat">Shorts</div>
+      <div class="list-name">Better Basics French</div>
+      <div class="list-prices"><span class="new">$20.00</span><span class="old">$10.00</span></div>
+    </div>
+  </a>
+</div>
+
+    <!-- Trendings -->
+    <div class="list-col">
+      <h3>Trendings</h3>
+      <a th:href="@{/shop(category='sport-shoes')}" class="list-item">
+        <div class="list-thumb"><img th:src="@{/images/tren-1.png}" alt=""></div>
+        <div class="list-info">
+          <div class="list-cat">Sports Shoes</div>
+          <div class="list-name">Running & Trekking shoes</div>
+          <div class="list-prices"><span class="new">$49.00</span><span class="old">$25.00</span></div>
+        </div>
+      </a>
+      <a th:href="@{/shop(category='sport-shoes')}" class="list-item">
+        <div class="list-thumb"><img th:src="@{/images/tren-2.png}" alt=""></div>
+        <div class="list-info">
+          <div class="list-cat">Sports Shoes</div>
+          <div class="list-name">Trekking & Running shoes</div>
+          <div class="list-prices"><span class="new">$78.00</span><span class="old">$36.00</span></div>
+        </div>
+      </a>
+      <a th:href="@{/shop(category='party-wear')}" class="list-item">
+        <div class="list-thumb"><img th:src="@{/images/tren-3.png}" alt=""></div>
+        <div class="list-info">
+          <div class="list-cat">Party Wear</div>
+          <div class="list-name">Women's Party Wear</div>
+          <div class="list-prices"><span class="new">$94.00</span><span class="old">$65.00</span></div>
+        </div>
+      </a>
+      <a th:href="@{/shop(category='sport-shoes')}" class="list-item">
+        <div class="list-thumb"><img th:src="@{/images/tren-4.png}" alt=""></div>
+        <div class="list-info">
+          <div class="list-cat">Sports</div>
+          <div class="list-name">Sports Claw Women's</div>
+          <div class="list-prices"><span class="new">$54.00</span><span class="old">$65.00</span></div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Top Rated -->
+    <div class="list-col">
+      <h3>Top Rated</h3>
+      <a th:href="@{/shop(category='jewellery')}" class="list-item">
+        <div class="list-thumb"><img th:src="@{/images/top-1.png}" alt=""></div>
+        <div class="list-info">
+          <div class="list-cat">Jewellery</div>
+          <div class="list-name">Platinum Zircon Cl.</div>
+          <div class="list-prices"><span class="new">$62.00</span><span class="old">$65.00</span></div>
+        </div>
+      </a>
+      <a th:href="@{/shop(category='watch')}" class="list-item">
+        <div class="list-thumb"><img th:src="@{/images/top-2.png}" alt=""></div>
+        <div class="list-info">
+          <div class="list-cat">Watches</div>
+          <div class="list-name">Smart Watch Viol...</div>
+          <div class="list-prices"><span class="new">$58.00</span><span class="old">$70.00</span></div>
+        </div>
+      </a>
+      <a th:href="@{/shop(category='cosmetics')}" class="list-item">
+        <div class="list-thumb"><img th:src="@{/images/top-3.png}" alt=""></div>
+        <div class="list-info">
+          <div class="list-cat">Cosmetics</div>
+          <div class="list-name">Shampoo Condit...</div>
+          <div class="list-prices"><span class="new">$20.00</span><span class="old">$30.00</span></div>
+        </div>
+      </a>
+      <a th:href="@{/shop(category='jewellery')}" class="list-item">
+        <div class="list-thumb"><img th:src="@{/images/top-4.png}" alt=""></div>
+        <div class="list-info">
+          <div class="list-cat">Jewellery</div>
+          <div class="list-name">Rose Gold Peacoc...</div>
+          <div class="list-prices"><span class="new">$25.00</span><span class="old">$30.00</span></div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DEAL OF THE DAY ===== -->
+<div style="max-width:1300px;margin:0 auto;padding:60px 24px 0;">
+  <h2 style="font-size:22px;font-weight:700;color:var(--dark);margin-bottom:24px;">Deal of The Day</h2>
+  <div style="border:1.5px solid var(--border);border-radius:16px;display:flex;align-items:center;gap:40px;padding:32px 40px;background:#fff;">
+    <!-- product image -->
+    <div style="width:220px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:100px;background:var(--light-gray);border-radius:12px;height:200px;">
+      <img th:src="@{/images/dealofday.png}" alt="">
+    </div>
+    <div style="flex:1;">
+      <div style="color:#f5a623;font-size:18px;margin-bottom:8px;">★★★☆☆</div>
+      <div style="font-size:16px;font-weight:700;color:var(--dark);margin-bottom:8px;text-transform:uppercase;">Shampoo, Conditioner & Facewash</div>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:14px;line-height:1.6;">Experience all-day freshness with the bold and masculine scent of Old Spice Swagger grooming essentials.This 2-in-1 grooming combo helps cleanse, refresh, and keep you confidently energized wherever you go.</p>
+      <div style="margin-bottom:18px;">
+        <span style="font-size:22px;font-weight:700;color:var(--pink);">$150.00</span>
+        <span style="font-size:15px;color:#bbb;text-decoration:line-through;margin-left:10px;">$200.00</span>
+      </div>
+
+      <!-- ADD TO CART FORM -->
+      <form th:action="@{/cart/add}" method="post">
+       
+        <input type="hidden" name="productId" th:value="${dealProduct != null ? dealProduct.id : ''}"/>
+        <input type="hidden" name="quantity" value="1"/>
+        <button type="submit"
+          style="background:var(--dark);color:#fff;border:none;padding:14px 36px;border-radius:8px;
+                 font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;cursor:pointer;
+                 letter-spacing:1px;transition:background 0.2s;"
+          onmouseover="this.style.background='var(--pink)'"
+          onmouseout="this.style.background='var(--dark)'">
+          ADD TO CART
+        </button>
+      </form>
+
+      <div style="margin-top:20px;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--dark);margin-bottom:6px;">
+          <span>ALREADY SOLD: <strong>20</strong></span>
+          <span>AVAILABLE: <strong>40</strong></span>
+        </div>
+        <div style="background:var(--border);border-radius:50px;height:6px;overflow:hidden;">
+          <div style="width:33%;height:100%;background:var(--pink);border-radius:50px;"></div>
+        </div>
+      </div>
+      <div style="margin-top:20px;">
+        <div style="font-size:12px;font-weight:600;color:var(--dark);margin-bottom:12px;letter-spacing:0.5px;">HURRY UP! OFFER ENDS IN:</div>
+        <div style="display:flex;gap:10px;">
+          <div class="cd-block"><div class="cd-num" id="deal-days">26</div><div class="cd-lbl">Days</div></div>
+          <div class="cd-block"><div class="cd-num" id="deal-hours">12</div><div class="cd-lbl">Hours</div></div>
+          <div class="cd-block"><div class="cd-num" id="deal-mins">54</div><div class="cd-lbl">Min</div></div>
+          <div class="cd-block"><div class="cd-num" id="deal-secs">33</div><div class="cd-lbl">Sec</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== NEW PRODUCTS ===== -->
+<section class="np-section">
+  <div class="np-inner">
+    <h2 class="np-title">New Products</h2>
+
+    <div class="np-grid">
+      <div class="np-card" th:each="p : ${newProducts}">
+
+        <!-- Badge -->
+       <!-- Badge — TAG takes highest priority -->
+
+<!-- 1. Check tags field for explicit badge keywords -->
+<th:block th:if="${p.tags != null and #strings.containsIgnoreCase(p.tags, 'New')}">
+  <div class="np-badge-corner np-badge-pink">
+    <span>NEW</span>
+  </div>
+</th:block>
+
+<th:block th:if="${p.tags != null and #strings.containsIgnoreCase(p.tags, 'Sale')}">
+  <div class="np-badge-corner np-badge-dark">
+    <span>SALE</span>
+  </div>
+</th:block>
+
+<th:block th:if="${p.tags != null and #strings.containsIgnoreCase(p.tags, 'Hot')}">
+  <div class="np-badge np-badge-green">HOT</div>
+</th:block>
+
+<!-- 2. Auto badge — only if no tag badge above applies -->
+<th:block th:if="${(p.tags == null or (!#strings.containsIgnoreCase(p.tags, 'New')
+                                   and !#strings.containsIgnoreCase(p.tags, 'Sale')
+                                   and !#strings.containsIgnoreCase(p.tags, 'Hot')))}">
+
+  <!-- Show discount % if discounted -->
+  <th:block th:if="${p.originalPrice != null and p.originalPrice > p.price}">
+    <div th:if="${p.discountPercentage != null and p.discountPercentage > 0}"
+         class="np-badge np-badge-green"
+         th:text="${p.discountPercentage} + '%'">15%</div>
+    <div th:unless="${p.discountPercentage != null and p.discountPercentage > 0}"
+         class="np-badge-corner np-badge-dark">
+      <span>SALE</span>
+    </div>
+  </th:block>
+
+  <!-- Show NEW if added in last 7 days and not discounted -->
+  <th:block th:if="${(p.originalPrice == null or p.originalPrice <= p.price)
+                 and p.createdAt != null
+                 and p.createdAt.isAfter(#temporals.createNow().minusDays(7))}">
+    <div class="np-badge-corner np-badge-pink">
+      <span>NEW</span>
+    </div>
+  </th:block>
+
+</th:block>
+
+        <!-- Image + Hover Actions -->
+        <div class="np-img-wrap">
+          <img th:src="${p.imageUrl}"
+               th:alt="${p.name}"
+               class="np-img"/>
+
+          <div class="np-actions">
+            <a th:href="@{/wishlist/add/{id}(id=${p.id})}"
+               class="np-action-btn" title="Add to Wishlist">
+              <i class="far fa-heart"></i>
+            </a>
+            <a th:href="@{/product/{id}(id=${p.id})}"
+               class="np-action-btn" title="Quick View">
+              <i class="far fa-eye"></i>
+            </a>
+            <a th:href="@{/compare/{id}(id=${p.id})}"
+               class="np-action-btn" title="Compare">
+              <i class="fas fa-exchange-alt"></i>
+            </a>
+            <a th:href="@{/cart/add/{id}(id=${p.id})}"
+               class="np-action-btn" title="Add to Cart">
+              <i class="fas fa-shopping-bag"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Info -->
+        <div class="np-info">
+
+          <div class="np-cat"
+               th:text="${p.category?.slugDisplay} ?: 'UNCATEGORIZED'">
+            CATEGORY
+          </div>
+
+          <div class="np-name" th:text="${p.name}">Product Name</div>
+
+          <!-- Stars -->
+          <div class="np-stars">
+            <th:block th:with="r=${p.rating != null ? p.rating.intValue() : 0}">
+              <i th:each="i : ${#numbers.sequence(1,5)}"
+                 th:class="${i <= r} ? 'fas fa-star' : 'far fa-star'"></i>
+            </th:block>
+          </div>
+
+          <!-- Price -->
+          <div class="np-price-row">
+            <span class="np-price"
+                  th:text="'$' + ${#numbers.formatDecimal(p.price, 1, 2)}">$0.00</span>
+            <span th:if="${p.originalPrice != null and p.originalPrice > p.price}"
+                  class="np-old-price"
+                  th:text="'$' + ${#numbers.formatDecimal(p.originalPrice, 1, 2)}">$0.00</span>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== INSTAGRAM SECTION ===== -->
+<section class="insta-section">
+  <h2 class="insta-title">Follow Us On Instagram</h2>
+  <div class="insta-grid">
+
+    <a href="https://instagram.com/themart" target="_blank" class="insta-item">
+      <img th:src="@{/images/insta1.png}" alt="Instagram post 1"/>
+      <div class="insta-overlay">
+        <i class="fab fa-instagram"></i>
+      </div>
+    </a>
+
+    <a href="https://instagram.com/themart" target="_blank" class="insta-item insta-wide">
+      <img th:src="@{/images/insta2.png}" alt="Instagram post 2"/>
+      <div class="insta-overlay">
+        <i class="fab fa-instagram"></i>
+      </div>
+    </a>
+
+    <a href="https://instagram.com/themart" target="_blank" class="insta-item">
+      <img th:src="@{/images/insta3.png}" alt="Instagram post 3"/>
+      <div class="insta-overlay">
+        <i class="fab fa-instagram"></i>
+      </div>
+    </a>
+
+    <a href="https://instagram.com/themart" target="_blank" class="insta-item insta-wide">
+      <img th:src="@{/images/insta4.png}" alt="Instagram post 4"/>
+      <div class="insta-overlay">
+        <i class="fab fa-instagram"></i>
+      </div>
+    </a>
+
+    <a href="https://instagram.com/themart" target="_blank" class="insta-item">
+      <img th:src="@{/images/insta5.png}" alt="Instagram post 5"/>
+      <div class="insta-overlay">
+        <i class="fab fa-instagram"></i>
+      </div>
+    </a>
+
+    <a href="https://instagram.com/themart" target="_blank" class="insta-item">
+      <img th:src="@{/images/insta6.png}" alt="Instagram post 6"/>
+      <div class="insta-overlay">
+        <i class="fab fa-instagram"></i>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ===== TESTIMONIAL + PROMO BANNER + OUR SERVICES ===== -->
+<section class="tps-section">
+  <div class="tps-inner">
+
+    <!-- Testimonial -->
+    <div class="tps-testimonial">
+      <h3 class="tps-col-title">Testimonial</h3>
+      <div class="testimonial-card">
+        <div class="testimonial-avatar">
+          <img th:src="@{/images/testimonial.png}" alt="Alan Doe"/>
+        </div>
+        <div class="testimonial-name">ALAN DOE</div>
+        <div class="testimonial-role">CEO &amp; Founder Invision</div>
+        <div class="testimonial-quote-mark">"</div>
+        <p class="testimonial-text">
+         We created our brand with a focus on quality, comfort, and customer
+    satisfaction. Seeing customers love and trust our products inspires us to
+    keep delivering the very best every day.
+        </p>
+      </div>
+    </div>
+
+    <!-- Promo Banner -->
+    <div class="tps-promo">
+      <div class="tps-promo-inner">
+      <div class="promo-discount-tag">25% Discount</div>
+      <h2 class="promo-heading">Summer<br/>Collection</h2>
+      <p class="promo-sub">Starting @ $10</p>
+      <a th:href="@{/shop?sale=summer}" class="promo-cta">SHOP NOW</a>
+      </div>
+      
+    </div>
+
+    <!-- Our Services -->
+    <div class="tps-services">
+      <h3 class="tps-col-title">Our Services</h3>
+      <div class="services-list">
+
+        <div class="service-item">
+          <div class="service-icon">
+            <img th:src="@{/images/service-icn.png}" alt="Worldwide Delivery"/>
+          </div>
+          <div class="service-info">
+            <div class="service-name">Worldwide Delivery</div>
+            <div class="service-sub">For Order Over $100</div>
+          </div>
+        </div>
+
+        <div class="service-item">
+          <div class="service-icon">
+            <img th:src="@{/images/service-icn(4).png}" alt="Next Day Delivery"/>
+          </div>
+          <div class="service-info">
+            <div class="service-name">Next Day Delivery</div>
+            <div class="service-sub">UK Orders Only</div>
+          </div>
+        </div>
+
+        <div class="service-item">
+          <div class="service-icon">
+            <img th:src="@{/images/service-icn(1).png}" alt="Best Online Support"/>
+          </div>
+          <div class="service-info">
+            <div class="service-name">Best Online Support</div>
+            <div class="service-sub">Hours: 8AM – 11PM</div>
+          </div>
+        </div>
+
+        <div class="service-item">
+          <div class="service-icon">
+            <img th:src="@{/images/service-icn(2).png}" alt="Return Policy"/>
+          </div>
+          <div class="service-info">
+            <div class="service-name">Return Policy</div>
+            <div class="service-sub">Easy &amp; Free Return</div>
+          </div>
+        </div>
+
+        <div class="service-item">
+          <div class="service-icon">
+            <img th:src="@{/images/service-icn(3).png}" alt="Money Back"/>
+          </div>
+          <div class="service-info">
+            <div class="service-name">30% Money Back</div>
+            <div class="service-sub">For Order Over $100</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== BLOG SECTION ===== -->
+<section class="blog-section">
+  <div class="blog-inner">
+
+    <a th:href="@{/blog/1}" class="blog-card">
+      <div class="blog-img-wrap">
+        <img th:src="@{/images/blog-img.png}" alt="Clothes Retail KPIs Blog"/>
+      </div>
+      <div class="blog-body">
+        <p class="blog-category">Fashion</p>
+        <h3 class="blog-title">
+          Clothes Retail KPIs 2021 Guide for Clothes Executives.
+        </h3>
+        <div class="blog-meta">By Mr Admin &nbsp;/&nbsp; June 18, 2024</div>
+      </div>
+    </a>
+
+    <a th:href="@{/blog/2}" class="blog-card">
+      <div class="blog-img-wrap">
+        <img th:src="@{/images/blog-img(1).png}" alt="EBT Vendor Blog"/>
+      </div>
+      <div class="blog-body">
+         <p class="blog-category">Shoes</p>
+        <h3 class="blog-title">
+          EBT vendor: Claim Your Share of SNAP Online Revenue.
+        </h3>
+        <div class="blog-meta">By Mr John &nbsp;/&nbsp; June 18, 2024</div>
+      </div>
+    </a>
+
+    <a th:href="@{/blog/3}" class="blog-card">
+      <div class="blog-img-wrap">
+        <img th:src="@{/images/blog-img(2).png}" alt="Curbside Fashion Blog"/>
+      </div>
+      <div class="blog-body">
+         <p class="blog-category">Electronics</p>
+        <h3 class="blog-title">
+          Curbside Fashion Trends: How to Win the Pickup Battle.
+        </h3>
+        <div class="blog-meta">By Mr Pawar &nbsp;/&nbsp; June 18, 2024</div>
+      </div>
+    </a>
+
+    <a th:href="@{/blog/4}" class="blog-card">
+      <div class="blog-img-wrap">
+        <img th:src="@{/images/blog-img(3).png}" alt="Clothes Fashion Trends Blog"/>
+        
+      </div>
+      <div class="blog-body">
+        <p class="blog-category">Clothes</p>
+        <h3 class="blog-title">
+          Curbside Fashion Trends: How to Win the Pickup Battle.
+        </h3>
+        <div class="blog-meta">By Mr Wick &nbsp;/&nbsp; June 18, 2024</div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+
+<div th:replace="~{fragments/layout :: brand-directory}"></div>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+<script>
+  // ── Deals of the Month countdown ──
+  // Fixed target set ONCE outside the function
+  const DEALS_TARGET = new Date();
+  DEALS_TARGET.setDate(DEALS_TARGET.getDate() + 2);
+  DEALS_TARGET.setHours(DEALS_TARGET.getHours() + 6);
+  DEALS_TARGET.setMinutes(DEALS_TARGET.getMinutes() + 5);
+  DEALS_TARGET.setSeconds(DEALS_TARGET.getSeconds() + 30);
+
+  function updateDealsCountdown() {
+    const diff = DEALS_TARGET - new Date();
+    const pad = n => String(Math.floor(n)).padStart(2, '0');
+    if (diff <= 0) {
+      ['days','hours','mins','secs'].forEach(id =>
+        document.getElementById(id).textContent = '00');
+      clearInterval(dealsTimer);
+      return;
+    }
+    document.getElementById('days').textContent  = pad(diff / 86400000);
+    document.getElementById('hours').textContent = pad((diff % 86400000) / 3600000);
+    document.getElementById('mins').textContent  = pad((diff % 3600000) / 60000);
+    document.getElementById('secs').textContent  = pad((diff % 60000) / 1000);
+  }
+  const dealsTimer = setInterval(updateDealsCountdown, 1000);
+  updateDealsCountdown();
+
+  // ── Deal of the Day countdown ──
+  // Fixed target set ONCE outside the function
+  const DEAL_DAY_TARGET = new Date();
+  DEAL_DAY_TARGET.setDate(DEAL_DAY_TARGET.getDate() + 26);
+  DEAL_DAY_TARGET.setHours(DEAL_DAY_TARGET.getHours() + 12);
+  DEAL_DAY_TARGET.setMinutes(DEAL_DAY_TARGET.getMinutes() + 54);
+
+  function updateDealDayCountdown() {
+    const diff = DEAL_DAY_TARGET - new Date();
+    const pad = n => String(Math.floor(n)).padStart(2, '0');
+    if (diff <= 0) {
+      ['deal-days','deal-hours','deal-mins','deal-secs'].forEach(id =>
+        document.getElementById(id).textContent = '00');
+      clearInterval(dealDayTimer);
+      return;
+    }
+    document.getElementById('deal-days').textContent  = pad(diff / 86400000);
+    document.getElementById('deal-hours').textContent = pad((diff % 86400000) / 3600000);
+    document.getElementById('deal-mins').textContent  = pad((diff % 3600000) / 60000);
+    document.getElementById('deal-secs').textContent  = pad((diff % 60000) / 1000);
+  }
+  const dealDayTimer = setInterval(updateDealDayCountdown, 1000);
+  updateDealDayCountdown();
+
+  // ── Popup close ──
+  const popup = document.getElementById('popup');
+  if (popup) {
+    popup.addEventListener('click', function(e) {
+      if (e.target === this) this.style.display = 'none';
+    });
+  }
+</script>
+
+
+
+<script>
+  $(document).ready(function () {
+    $('.hero-carousel').owlCarousel({
+      items: 1,
+      loop: true,
+      autoplay: true,
+      autoplayTimeout: 2500,
+      autoplayHoverPause: true,
+      animateOut: 'fadeOut',
+      smartSpeed: 700,
+      nav: true,
+      navText: ['&#8249;', '&#8250;'],
+      dots: true,
+      mouseDrag: true,
+      touchDrag: true
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+
+  var $carousel = $('.cs-carousel');
+
+  $carousel.owlCarousel({
+    loop: true,
+    margin: 0,
+    nav: false,        // using custom buttons
+    dots: false,
+    autoplay: true,
+    autoplayTimeout: 3500,
+    autoplayHoverPause: true,
+    responsive: {
+      0: {
+        items: 1
+      },
+      480: {
+        items: 2
+      },
+      768: {
+        items: 3
+      },
+      1024: {
+        items: 4
+      },
+      1200: {
+        items: 5
+      }
+    }
+  });
+
+  // Custom prev/next buttons
+  $('.cs-prev').on('click', function () {
+    $carousel.trigger('prev.owl.carousel');
+  });
+
+  $('.cs-next').on('click', function () {
+    $carousel.trigger('next.owl.carousel');
+  });
+
+});
+</script>
+
+<script>
+  // Show popup after 3 seconds
+  setTimeout(() => {
+    const popup = document.getElementById('popup');
+    if (popup) popup.style.display = 'flex';
+  }, 3000);
+
+  // Close on overlay click
+  document.getElementById('popup').addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none';
+  });
+
+  function subscribeNewsletter() {
+    const email = document.getElementById('newsletterEmail').value.trim();
+    const msg   = document.getElementById('newsletterMsg');
+
+    if (!email || !email.includes('@')) {
+      msg.style.color = '#e91e8c';
+      msg.textContent = 'Please enter a valid email address.';
+      return;
+    }
+
+    fetch('/newsletter/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'email=' + encodeURIComponent(email)
+    })
+    .then(res => res.json())
+    .then(data => {
+      msg.style.color = data.success ? 'green' : '#e91e8c';
+      msg.textContent = data.message;
+      if (data.success) {
+        document.getElementById('newsletterEmail').value = '';
+        setTimeout(() => {
+          document.getElementById('popup').style.display = 'none';
+        }, 2000);
+      }
+    })
+    .catch(() => {
+      msg.style.color = '#e91e8c';
+      msg.textContent = 'Something went wrong. Please try again.';
+    });
+  }
+</script>
+
+<!-- Add to Cart Script -->
+<script>
+function addToCart(productId) {
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'productId=' + productId + '&quantity=1'
+    })
+    .then(res => {
+        if (res.ok || res.redirected) {
+            // update cart badge
+            const badge = document.getElementById('cartCount');
+            if (badge) badge.textContent = parseInt(badge.textContent || '0') + 1;
+            showToast('Added to cart!');
+        } else if (res.status === 401 || res.status === 403) {
+            window.location.href = '/login';
+        }
+    })
+    .catch(() => showToast('Something went wrong.'));
+}
+
+function showToast(msg) {
+    let toast = document.getElementById('cart-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'cart-toast';
+        toast.style.cssText = 'position:fixed;bottom:30px;right:30px;background:#484848;color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;z-index:9999;transition:opacity 0.3s;';
+        document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = '1';
+    setTimeout(() => toast.style.opacity = '0', 2500);
+}
+</script>
+
+
+</body>
+</html>

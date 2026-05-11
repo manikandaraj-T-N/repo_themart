@@ -1,0 +1,737 @@
+    <div class="mega-menu">
+       <div class="mega-inner">
+
+          <!-- Electronics -->
+          <div class="mega-col mega-col-wide">
+            <div class="mega-col-title">Electronics</div>
+            <div class="mega-two-col">
+              <ul class="mega-links">
+                <li><a th:href="@{/shop?category=desktop}">Desktop</a></li>
+                <li><a th:href="@{/shop?category=laptop}">Laptop</a></li>
+                <li><a th:href="@{/shop?category=mobile-phone}">Mobile Phone</a></li>
+                <li><a th:href="@{/shop?category=tablet}">Tablet</a></li>
+                <li><a th:href="@{/shop?category=headphone}">Headphone</a></li>
+              </ul>
+              <ul class="mega-links">
+                <li><a th:href="@{/shop?category=smart-watch}">Smart Watch</a></li>
+                <li><a th:href="@{/shop?category=smart-tv}">Smart TV</a></li>
+                <li><a th:href="@{/shop?category=keyboard}">Keyboard</a></li>
+                <li><a th:href="@{/shop?category=mouse}">Mouse</a></li>
+                <li><a th:href="@{/shop?category=camera}">Camera</a></li>
+              </ul>
+            </div>
+            <div class="mega-promo">
+              <div class="mega-promo-text">
+                <span class="promo-tag">Flat 30% off</span>
+                <strong>Headphone Collection</strong>
+              </div>
+              <a th:href="@{/shop?category=headphone}" class="promo-btn">SHOP NOW</a>
+            </div>
+          </div>
+
+          <!-- Men's -->
+          <div class="mega-col">
+            <div class="mega-col-title">Men's</div>
+            <ul class="mega-links">
+              <li><a th:href="@{/shop?category=mens-formal}">Formal</a></li>
+              <li><a th:href="@{/shop?category=mens-casual}">Casual</a></li>
+              <li><a th:href="@{/shop?category=mens-sports}">Sports</a></li>
+              <li><a th:href="@{/shop?category=mens-jackets}">Jacket</a></li>
+              <li><a th:href="@{/shop?category=sunglasses}">Sunglasses</a></li>
+            </ul>
+            <div class="mega-promo">
+              <div class="mega-promo-text">
+                <span class="promo-tag">Flat 19% off</span>
+                <strong>Men's Fashion</strong>
+              </div>
+              <a th:href="@{/shop?gender=mens}" class="promo-btn">SHOP NOW</a>
+            </div>
+          </div>
+
+          <!-- Women's -->
+          <div class="mega-col">
+            <div class="mega-col-title">Women's</div>
+            <ul class="mega-links">
+              <li><a th:href="@{/shop?category=womens-formal}">Formal</a></li>
+              <li><a th:href="@{/shop?category=womens-casual}">Casual</a></li>
+              <li><a th:href="@{/shop?category=perfume}">Perfume</a></li>
+              <li><a th:href="@{/shop?category=cosmetics}">Cosmetics</a></li>
+              <li><a th:href="@{/shop?category=bags}">Bags</a></li>
+            </ul>
+            <div class="mega-promo">
+              <div class="mega-promo-text">
+                <span class="promo-tag">Flat 35% off</span>
+                <strong>Women's Fashion</strong>
+              </div>
+              <a th:href="@{/shop?gender=womens}" class="promo-btn">SHOP NOW</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+      package com.themart.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.themart.model.Product;
+import com.themart.model.User;
+import com.themart.repository.UserRepository;
+import com.themart.service.ProductService;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/api/products")
+@RequiredArgsConstructor
+public class ProductController {
+
+    @Value("${app.upload.dir}")
+    private String uploadDir;
+
+    private final ProductService productService;
+    // private final UserRepository userRepository;
+
+    @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllActiveProducts());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProduct(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductById(id));
+    }
+
+    // @GetMapping("/category/{categoryId}")
+    // public ResponseEntity<List<Product>> getByCategory(@PathVariable Long categoryId) {
+    //     return ResponseEntity.ok(productService.getProductsByCategory(categoryId));
+    // }
+
+    // @GetMapping("/featured")
+    // public ResponseEntity<List<Product>> getFeatured() {
+    //     return ResponseEntity.ok(productService.getFeaturedProducts());
+    // }
+
+    // @GetMapping("/organic")
+    // public ResponseEntity<List<Product>> getOrganic() {
+    //     return ResponseEntity.ok(productService.getOrganicProducts());
+    // }
+
+    // @GetMapping("/sale")
+    // public ResponseEntity<List<Product>> getSaleProducts() {
+    //     return ResponseEntity.ok(productService.getProductsOnSale());
+    // }
+
+    // @GetMapping("/search")
+    // public ResponseEntity<List<Product>> search(@RequestParam String q) {
+    //     return ResponseEntity.ok(productService.searchProducts(q));
+    // }
+
+    // Admin endpoints
+    @PostMapping("/admin")
+    public ResponseEntity<Product> createProduct(@Validated @RequestBody Product product) {
+        return ResponseEntity.ok(productService.createProduct(product));
+    }
+
+    @PutMapping("/admin/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id,
+                                                  @Validated @RequestBody Product product) {
+        return ResponseEntity.ok(productService.updateProduct(id, product));
+    }
+
+    @DeleteMapping("/admin/{id}")
+    public ResponseEntity<Map<String, String>> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.ok(Map.of("message", "Product deleted successfully"));
+    }
+
+    // @GetMapping("/admin/low-stock")
+    // public ResponseEntity<List<Product>> getLowStock(@RequestParam(defaultValue = "10") int threshold) {
+    //     return ResponseEntity.ok(productService.getLowStockProducts(threshold));
+    // }
+   
+   
+}
+
+
+
+shop html sidebar
+<aside class="sidebar">
+
+  <!-- Category Filter -->
+  <div class="filter-block">
+    <div class="filter-title" onclick="toggleFilter('catFilter')">
+      All Categories <i class="fas fa-chevron-up"></i>
+    </div>
+    <div class="filter-body open" id="catFilter">
+      <ul class="cat-list">
+        <li th:classappend="${selectedCategory == null or selectedCategory == 'all'} ? ' active' : ''">
+          <!-- stopPropagation prevents the click from bubbling to filter-title -->
+          <a href="/shop" onclick="event.stopPropagation()">All Products</a>
+        </li>
+        <li th:each="cat : ${categories}"
+            th:classappend="${selectedCategory == cat.slug} ? ' active' : ''">
+          <a th:href="@{/shop(category=${cat.slug})}"
+             th:text="${cat.name}"
+             onclick="event.stopPropagation()">Category</a>
+        </li>
+        <th:block th:if="${categories == null or categories.isEmpty()}">
+          <li><a href="/shop?category=fresh-fruit"      onclick="event.stopPropagation()">Fresh Fruit</a></li>
+          <li><a href="/shop?category=fresh-vegetables" onclick="event.stopPropagation()">Fresh Vegetables</a></li>
+          <li><a href="/shop?category=meat-fish"        onclick="event.stopPropagation()">Meat &amp; Fish</a></li>
+          <li><a href="/shop?category=snacks"           onclick="event.stopPropagation()">Snacks</a></li>
+          <li><a href="/shop?category=beverages"        onclick="event.stopPropagation()">Beverages</a></li>
+          <li><a href="/shop?category=beauty-health"    onclick="event.stopPropagation()">Beauty &amp; Health</a></li>
+          <li><a href="/shop?category=bread-bakery"     onclick="event.stopPropagation()">Bread &amp; Bakery</a></li>
+          <li><a href="/shop?category=baking-needs"     onclick="event.stopPropagation()">Baking Needs</a></li>
+          <li><a href="/shop?category=cooking"          onclick="event.stopPropagation()">Cooking</a></li>
+          <li><a href="/shop?category=diabetic-food"    onclick="event.stopPropagation()">Diabetic Food</a></li>
+          <li><a href="/shop?category=dish-detergents"  onclick="event.stopPropagation()">Dish Detergent</a></li>
+          <li><a href="/shop?category=oil"              onclick="event.stopPropagation()">Oil</a></li>
+        </th:block>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Price Filter -->
+  <div class="filter-block">
+    <div class="filter-title" onclick="toggleFilter('priceFilter')">
+      Price <i class="fas fa-chevron-up"></i>
+    </div>
+    <div class="filter-body open" id="priceFilter">
+      <div class="price-range">
+        <input type="range" id="maxPrice" min="0" max="2000"
+               th:value="${maxPrice} ?: 2000"
+               oninput="updatePrice(this.value)"/>
+        <div class="price-labels">
+          <span>₹0</span>
+          <span id="priceDisplay"
+                th:text="'₹' + (${maxPrice} ?: 2000)">₹2000</span>
+        </div>
+        <button class="apply-btn" onclick="applyPriceFilter()">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rating Filter -->
+  <div class="filter-block">
+    <div class="filter-title" onclick="toggleFilter('ratingFilter')">
+      Rating <i class="fas fa-chevron-up"></i>
+    </div>
+    <div class="filter-body open" id="ratingFilter">
+      <label class="rating-option" th:each="r : ${#numbers.sequence(5,1,-1)}">
+        <input type="radio" name="rating"
+               th:value="${r}"
+               th:checked="${selectedRating == r}"
+               onchange="applyRatingFilter(this.value)"/>
+        <span th:each="s : ${#numbers.sequence(1,5)}">
+          <i th:class="${s <= r} ? 'fas fa-star' : 'far fa-star'"></i>
+        </span>
+        <span th:text="${r} + (${r} < 5 ? ' &amp; up' : '')"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Popular Tags — no toggle, always visible -->
+  <div class="filter-block">
+    <div class="filter-title">
+      Popular Tags
+    </div>
+    <div class="filter-body open" id="tagsFilter">
+      <div class="tags-wrap">
+        <span th:each="t : ${allTags}"
+              th:text="${t}"
+              th:classappend="${t == activeTag} ? ' active' : ''"
+              th:attr="data-tag=${t}"
+              onclick="filterTag(this.dataset.tag)"
+              class="tag">
+        </span>
+      </div>
+    </div>
+  </div>
+
+</aside>
+
+
+.product-card {
+ 
+
+   border: 1.5px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  cursor: pointer;
+  transition: box-shadow 0.25s, transform 0.25s;
+  position: relative;
+}
+
+.badge-wrap { display: none; }
+
+/* Image Wrapper */
+.product-img-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  height:150px;
+  background: var(--light);
+  margin-bottom: 14px;
+}
+
+.product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+  object-position: top;
+}
+
+.product-card:hover .product-img {
+  transform: scale(1.04);
+}
+
+
+.card-actions {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.25s;
+  z-index: 3;
+}
+
+.product-card:hover .card-actions { opacity: 1; }
+
+.action-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--white);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--dark);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  transition: background 0.2s, color 0.2s;
+}
+
+.action-btn:hover { background: var(--pink); color: var(--white); }
+
+/* Quick View — center overlay */
+.card-hover-overlay {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  opacity: 0;
+  transition: opacity 0.25s, transform 0.25s;
+  z-index: 3;
+  white-space: nowrap;
+}
+
+.product-card:hover .card-hover-overlay {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Quick View button */
+.view-cart-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--white);
+  color: var(--dark);
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  transition: background 0.2s, color 0.2s;
+}
+
+.view-cart-btn:hover { background: var(--pink); color: var(--white); }
+
+/* Hide description in hover overlay */
+.hover-desc { display: none; }
+
+/* Rating badge — hide */
+.rating-badge { display: none; }
+
+/* ── Product Info ── */
+.product-info {
+  padding: 0 4px;
+}
+
+.product-category-tag { display: none; }
+
+.product-name {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--dark);
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.price-current {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--dark);
+}
+
+.price-old {
+  font-size: 13px;
+  color: #bbb;
+  text-decoration: line-through;
+}
+
+.price-unit { display: none; }
+
+/* Product footer — hide stars, keep cart */
+.product-footer {
+  display: none;
+}
+
+/* ── Empty State ── */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 80px 24px;
+  color: var(--gray);
+}
+.empty-state i { font-size: 40px; margin-bottom: 14px; color: var(--pink-light); display: block; }
+.empty-state h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--dark); }
+.empty-state p { font-size: 14px; margin-bottom: 20px; }
+.empty-state a {
+  display: inline-block;
+  background: var(--pink);
+  color: var(--white);
+  padding: 11px 28px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+
+old checkoutcontroller
+
+// @Controller
+// @RequiredArgsConstructor
+// public class CheckoutController {
+
+//     private final CartService       cartService;
+//     private final OrderRepository   orderRepository;
+//     private final UserRepository    userRepository;
+//      private final ProductRepository productRepository;
+//       private final EmailService      emailService;  
+//     private final RazorpayService   razorpayService;
+
+//     @Value("${razorpay.key.id}")
+//     private String razorpayKeyId;
+
+//     @GetMapping("/checkout")
+//     public String checkoutPage(
+//             @AuthenticationPrincipal UserDetails userDetails,
+//             Model model) {
+
+//         if (userDetails == null) return "redirect:/login";
+
+//         String email = userDetails.getUsername();
+//         User user = userRepository.findByEmail(email)
+//                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+//         List<CartItem> cartItems = cartService.getCartItems(email);
+//         if (cartItems.isEmpty()) return "redirect:/cart";
+
+//         BigDecimal subtotal = cartItems.stream()
+//                 .map(ci -> ci.getProduct().getPrice()
+//                         .multiply(BigDecimal.valueOf(ci.getQuantity())))
+//                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+//         BigDecimal delivery = subtotal.compareTo(new BigDecimal("500")) >= 0
+//                 ? BigDecimal.ZERO : new BigDecimal("40");
+
+//         model.addAttribute("cartItems",    cartItems);
+//         model.addAttribute("user",         user);
+//         model.addAttribute("subtotal",     subtotal);
+//         model.addAttribute("delivery",     delivery);
+//         model.addAttribute("total",        subtotal.add(delivery));
+//         model.addAttribute("razorpayKeyId", razorpayKeyId);
+
+//         return "checkout";
+//     }
+
+//     @PostMapping("/checkout")
+//     @Transactional
+//     public String processCheckout(
+//             @AuthenticationPrincipal UserDetails userDetails,
+//             @RequestParam BigDecimal subtotal,
+//             @RequestParam BigDecimal deliveryCharge,
+//             @RequestParam BigDecimal total,
+//             @RequestParam String shippingName,
+//             @RequestParam String shippingPhone,
+//             @RequestParam String shippingAddress,
+//             @RequestParam String shippingCity,
+//             @RequestParam String shippingPincode,
+//             @RequestParam String paymentMethod,
+//             Model model,
+//             RedirectAttributes redirectAttributes) {
+
+//         if (userDetails == null) return "redirect:/login";
+
+//         try {
+//             String email = userDetails.getUsername();
+//             User user = userRepository.findByEmail(email)
+//                     .orElseThrow(() -> new RuntimeException("User not found"));
+
+//             List<CartItem> cartItems = cartService.getCartItems(email);
+//             if (cartItems.isEmpty()) {
+//                 redirectAttributes.addFlashAttribute("errorMessage", "Your cart is empty!");
+//                 return "redirect:/cart";
+//             }
+
+//             // Build and save order
+//             Order order = Order.builder()
+//                     .user(user)
+//                     .totalAmount(total)
+//                     .deliveryCharge(deliveryCharge)
+//                     .discountAmount(BigDecimal.ZERO)
+//                     .status(Order.OrderStatus.PENDING)
+//                     .paymentStatus(Order.PaymentStatus.PENDING)
+//                     .paymentMethod(paymentMethod)
+//                     .shippingName(shippingName)
+//                     .shippingAddress(shippingAddress)
+//                     .shippingCity(shippingCity)
+//                     .shippingPincode(shippingPincode)
+//                     .shippingPhone(shippingPhone)
+//                     .build();
+
+//             List<OrderItem> orderItems = new ArrayList<>();
+//             for (CartItem ci : cartItems) {
+//                 BigDecimal unitPrice  = ci.getProduct().getPrice();
+//                 BigDecimal totalPrice = unitPrice.multiply(BigDecimal.valueOf(ci.getQuantity()));
+//                 orderItems.add(OrderItem.builder()
+//                         .order(order)
+//                         .product(ci.getProduct())
+//                         .quantity(ci.getQuantity())
+//                         .unitPrice(unitPrice)
+//                         .totalPrice(totalPrice)
+//                         .build());
+//             }
+//             order.setOrderItems(orderItems);
+//             orderRepository.save(order);
+
+//             // After orderRepository.save(order)
+// try {
+//     emailService.sendOrderConfirmation(user.getEmail(), order);
+// } catch (Exception e) {
+//     // Don't fail the order if email fails
+//     System.err.println("Email failed: " + e.getMessage());
+// }
+
+//             // After building orderItems, reduce stock
+// for (CartItem ci : cartItems) {
+//     Product product = ci.getProduct();
+//     int newStock = product.getStockQuantity() - ci.getQuantity();
+//     product.setStockQuantity(Math.max(0, newStock)); // never go below 0
+//     productRepository.save(product);
+// }
+
+//             // COD — clear cart and redirect to success
+//             if ("COD".equals(paymentMethod)) {
+//                 cartService.clearCart(email);
+//                 redirectAttributes.addFlashAttribute("successMessage",
+//                         "Order placed! Order ID: #" + order.getOrderNumber());
+//                 return "redirect:/order/success/" + order.getId();
+//             }
+
+//             // UPI/Online — create Razorpay order and show payment page
+//             JSONObject razorpayOrder = razorpayService.createOrder(
+//                     total, order.getOrderNumber());
+
+//             model.addAttribute("order",           order);
+//             model.addAttribute("razorpayOrderId", razorpayOrder.getString("id"));
+//             model.addAttribute("razorpayKeyId",   razorpayKeyId);
+//             model.addAttribute("amount",          total.multiply(new BigDecimal("100")).intValue());
+//             model.addAttribute("userEmail",       user.getEmail());
+//             model.addAttribute("userName",        shippingName);
+//             model.addAttribute("userPhone",       shippingPhone);
+
+//             return "payment";
+
+//         } catch (Exception e) {
+//             redirectAttributes.addFlashAttribute("errorMessage",
+//                     "Order failed: " + e.getMessage());
+//             return "redirect:/cart";
+//         }
+//     }
+
+//     // Called after Razorpay payment success
+//     @PostMapping("/payment/verify")
+//     @Transactional
+//     public String verifyPayment(
+//             @RequestParam String razorpay_order_id,
+//             @RequestParam String razorpay_payment_id,
+//             @RequestParam String razorpay_signature,
+//             @RequestParam Long orderId,
+//             @AuthenticationPrincipal UserDetails userDetails,
+//             RedirectAttributes redirectAttributes) {
+
+//         boolean valid = razorpayService.verifySignature(
+//                 razorpay_order_id, razorpay_payment_id, razorpay_signature);
+
+//         Order order = orderRepository.findById(orderId)
+//                 .orElseThrow(() -> new RuntimeException("Order not found"));
+
+//         if (valid) {
+//             order.setPaymentStatus(Order.PaymentStatus.PAID);
+//             order.setStatus(Order.OrderStatus.CONFIRMED);
+//             orderRepository.save(order);
+
+//             cartService.clearCart(userDetails.getUsername());
+
+//             redirectAttributes.addFlashAttribute("successMessage",
+//                     "Payment successful! Order #" + order.getOrderNumber());
+//             return "redirect:/order/success/" + order.getId();
+
+//         } else {
+//             order.setPaymentStatus(Order.PaymentStatus.FAILED);
+//             orderRepository.save(order);
+
+//             redirectAttributes.addFlashAttribute("errorMessage",
+//                     "Payment verification failed. Please contact support.");
+//             return "redirect:/cart";
+//         }
+//     }
+
+//     @GetMapping("/order/success/{id}")
+//     @Transactional
+//     public String orderSuccess(@PathVariable Long id, Model model) {
+//         orderRepository.findById(id).ifPresent(order -> {
+//             order.getOrderItems().size(); // force lazy load
+//             model.addAttribute("order", order);
+//         });
+//         return "order-success";
+//     }
+
+
+//     @PostMapping("/checkout/initiate")
+// @Transactional
+// @ResponseBody
+// public Map<String, Object> initiatePayment(
+//         @AuthenticationPrincipal UserDetails userDetails,
+//         @RequestParam BigDecimal subtotal,
+//         @RequestParam BigDecimal deliveryCharge,
+//         @RequestParam BigDecimal total,
+//         @RequestParam String shippingName,
+//         @RequestParam String shippingPhone,
+//         @RequestParam String shippingAddress,
+//         @RequestParam String shippingCity,
+//         @RequestParam String shippingPincode,
+//         @RequestParam String paymentMethod) {
+
+//     try {
+//         String email = userDetails.getUsername();
+//         User user = userRepository.findByEmail(email)
+//                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+//         List<CartItem> cartItems = cartService.getCartItems(email);
+//         if (cartItems.isEmpty()) {
+//             return Map.of("error", "Cart is empty");
+//         }
+
+//         Order order = Order.builder()
+//                 .user(user)
+//                 .totalAmount(total)
+//                 .deliveryCharge(deliveryCharge)
+//                 .discountAmount(BigDecimal.ZERO)
+//                 .status(Order.OrderStatus.PENDING)
+//                 .paymentStatus(Order.PaymentStatus.PENDING)
+//                 .paymentMethod(paymentMethod)
+//                 .shippingName(shippingName)
+//                 .shippingAddress(shippingAddress)
+//                 .shippingCity(shippingCity)
+//                 .shippingPincode(shippingPincode)
+//                 .shippingPhone(shippingPhone)
+//                 .build();
+
+//         List<OrderItem> orderItems = new ArrayList<>();
+//         for (CartItem ci : cartItems) {
+//             BigDecimal unitPrice  = ci.getProduct().getPrice();
+//             BigDecimal totalPrice = unitPrice.multiply(BigDecimal.valueOf(ci.getQuantity()));
+//             orderItems.add(OrderItem.builder()
+//                     .order(order)
+//                     .product(ci.getProduct())
+//                     .quantity(ci.getQuantity())
+//                     .unitPrice(unitPrice)
+//                     .totalPrice(totalPrice)
+//                     .build());
+//         }
+//         order.setOrderItems(orderItems);
+//         orderRepository.save(order);
+
+//         JSONObject rzpOrder = razorpayService.createOrder(total, order.getOrderNumber());
+
+//         return Map.of(
+//             "orderId",         order.getId(),
+//             "orderNumber",     order.getOrderNumber(),
+//             "razorpayOrderId", rzpOrder.getString("id"),
+//             "amount",          total.multiply(new BigDecimal("100")).intValue()
+//         );
+
+//     } catch (Exception e) {
+//         return Map.of("error", e.getMessage());
+//     }
+// }
+
+// }
+
+
+
+
+
+
+

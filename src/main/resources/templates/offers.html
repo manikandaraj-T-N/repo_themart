@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Hot Offers - TheMart</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" th:href="@{/css/home.css}"/>
+</head>
+<body>
+
+  <div th:replace="~{fragments/layout :: topbar}"></div>
+  <div th:replace="~{fragments/layout :: header}"></div>
+
+  <div style="max-width:1200px;margin:0 auto;padding:24px;">
+    <img th:src="@{/images/offers.png}"
+         src="/images/offers.png"
+         alt="Hot Offers"
+         style="width:100%;border-radius:16px;"/>
+  </div>
+
+  <div th:replace="~{fragments/layout :: brand-directory}"></div>
+  <div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

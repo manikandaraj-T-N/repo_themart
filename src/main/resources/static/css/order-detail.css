@@ -1,0 +1,387 @@
+/* order-detail css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+
+
+/* order-detail.css */
+
+:root {
+  --pink:       #FF8F9C;
+  --pink-light: #FFD6DB;
+  --pink-dark:  #e87585;
+  --white:      #FFFFFF;
+  --dark:       #484848;
+  --gray:       #888;
+  --light:      #f6f6f6;
+  --border:     #ebebeb;
+}
+
+/* ── Page ── */
+.od-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 32px 24px 60px;
+}
+
+/* ── Back Link ── */
+a.od-back,
+a.od-back:link,
+a.od-back:visited {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--pink);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: 24px;
+  transition: opacity 0.2s;
+}
+
+a.od-back:hover { opacity: 0.75; }
+
+/* ── Hero Banner ── */
+.od-hero {
+  background: var(--white);
+  border-radius: 20px;
+  border: 1.5px solid var(--pink-light);
+  padding: 24px 28px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.od-hero-num {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 5px;
+}
+
+.od-hero-date {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--gray);
+}
+
+.od-hero-date i {
+  color: var(--pink);
+  font-size: 11px;
+}
+
+/* ── Status Badges ── */
+.od-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 50px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.od-badge-pending   { background: #fff8e1; color: #f57f17; }
+.od-badge-delivered { background: #e8f5e9; color: #2e7d32; }
+.od-badge-cancelled { background: #fff5f5; color: #e53935; }
+.od-badge-shipped   { background: #e3f2fd; color: #1565c0; }
+
+/* ── Grid Layout ── */
+.od-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+/* ── Cards ── */
+.od-card {
+  background: var(--white);
+  border: 1.5px solid var(--pink-light);
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 18px;
+}
+
+.od-card-full {
+  grid-column: 1 / -1;
+}
+
+.od-card-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--pink);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.od-card-label i { font-size: 13px; }
+
+/* ── Order Progress Stepper ── */
+.od-steps {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 4px 0 8px;
+  position: relative;
+}
+
+.od-steps::before {
+  content: '';
+  position: absolute;
+  top: 17px;
+  left: 30px;
+  right: 30px;
+  height: 2px;
+  background: var(--pink-light);
+  z-index: 0;
+}
+
+.od-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+}
+
+.od-step-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border: 2px solid var(--pink-light);
+  background: var(--white);
+  color: #ccc;
+  transition: all 0.2s;
+}
+
+.od-step-dot.done {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: var(--white);
+}
+
+.od-step-dot.active {
+  background: var(--white);
+  border-color: var(--pink);
+  color: var(--pink);
+}
+
+.od-step-label {
+  font-size: 11px;
+  color: #bbb;
+  font-weight: 500;
+  text-align: center;
+}
+
+.od-step-label.done {
+  color: var(--pink);
+  font-weight: 600;
+}
+
+.od-step-label.active {
+  color: var(--dark);
+  font-weight: 700;
+}
+
+/* ── Order Items ── */
+.od-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  background: #fdf5f6;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.od-item:last-of-type { margin-bottom: 0; }
+
+.od-item-img {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff5f6;
+  border: 1.5px solid var(--pink-light);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.od-item-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 4px;
+}
+
+.od-item-info { flex: 1; min-width: 0; }
+
+.od-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.od-item-sub {
+  font-size: 12px;
+  color: var(--gray);
+  margin-top: 2px;
+}
+
+.od-item-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--pink);
+  flex-shrink: 0;
+}
+
+/* ── Totals ── */
+.od-totals {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1.5px dashed var(--pink-light);
+}
+
+.od-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--gray);
+  margin-bottom: 6px;
+}
+
+.od-total-row i {
+  color: var(--pink);
+  font-size: 11px;
+  margin-right: 4px;
+}
+
+.od-total-row .free {
+  color: var(--pink);
+  font-weight: 700;
+}
+
+.od-grand {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1.5px solid var(--pink-light);
+}
+
+.od-grand span:first-child {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--dark);
+}
+
+.od-grand span:last-child {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--pink);
+}
+
+/* ── Address ── */
+.od-addr-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.od-addr-line {
+  font-size: 13px;
+  color: #555;
+  line-height: 2;
+}
+
+.od-addr-line i {
+  color: var(--pink);
+  font-size: 12px;
+  margin-right: 4px;
+}
+
+/* ── Payment ── */
+.od-pay-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  padding: 10px 0;
+  border-bottom: 1px solid #fff5f6;
+}
+
+.od-pay-row:last-child { border-bottom: none; }
+
+.od-pay-lbl {
+  color: var(--gray);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.od-pay-lbl i {
+  color: var(--pink);
+  font-size: 13px;
+}
+
+.od-pay-val {
+  font-weight: 600;
+  color: var(--dark);
+}
+
+/* ── Payment status badges ── */
+.badge-yes {
+  background: var(--pink-light);
+  color: #c05060;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.badge-no {
+  background: #ffe0e0;
+  color: #c0392b;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.badge-pending-sm {
+  background: #fff3cd;
+  color: #856404;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .od-grid { grid-template-columns: 1fr; }
+  .od-hero { flex-direction: column; align-items: flex-start; }
+  .od-steps::before { left: 20px; right: 20px; }
+  .od-step-label { font-size: 10px; }
+}

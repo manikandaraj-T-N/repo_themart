@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Category Form - TheMart Admin</title>
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="admin-layout">
+
+  <aside class="admin-sidebar">
+    <div class="admin-logo">The<span>Mart</span></div>
+    <nav>
+      <a th:href="@{/admin/dashboard}"><i class="fas fa-home"></i> Dashboard</a>
+      <a th:href="@{/admin/products}"><i class="fas fa-box"></i> Products</a>
+      <a th:href="@{/admin/categories}" class="active"><i class="fas fa-tags"></i> Categories</a>
+      <a th:href="@{/admin/orders}"><i class="fas fa-bag-shopping"></i> Orders</a>
+      <a th:href="@{/admin/blogs}"><i class="fas fa-newspaper"></i> Blogs</a>
+      <a th:href="@{/admin/newsletter}"><i class="fas fa-envelope-open-text"></i> Newsletter</a>
+      <a th:href="@{/home}"><i class="fas fa-eye"></i> View Site</a>
+      <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+
+    <!-- Page Header -->
+    <div class="admin-topbar">
+      <div>
+        <div class="admin-breadcrumb">
+          <a th:href="@{/admin/categories}">Categories</a>
+          <i class="fas fa-chevron-right"></i>
+          <span th:text="${category.id != null} ? 'Edit Category' : 'Add Category'">Category Form</span>
+        </div>
+        <h1 class="admin-page-title"
+            th:text="${category.id != null} ? 'Edit Category' : 'Add Category'">
+          Add Category
+        </h1>
+      </div>
+      <a th:href="@{/admin/categories}" class="btn-cancel" style="height:fit-content;">
+        <i class="fas fa-arrow-left"></i> Back to Categories
+      </a>
+    </div>
+
+    <div class="admin-card form-card">
+
+      <form th:action="@{/admin/categories/save}"
+            th:object="${category}"
+            method="post"
+            enctype="multipart/form-data">
+
+        <!-- Hidden fields -->
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{imageUrl}"/>
+
+        <!-- ── Section: Basic Info ── -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <i class="fas fa-info-circle"></i> Basic Information
+          </div>
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label>Category Name <span class="required">*</span></label>
+              <input type="text" th:field="*{name}"
+                     placeholder="e.g. Men's Jackets" required/>
+            </div>
+
+            <div class="form-group">
+              <label>Slug <small>(auto-generated if left blank)</small></label>
+              <input type="text" th:field="*{slug}"
+                     placeholder="e.g. mens-jackets"/>
+            </div>
+
+            <div class="form-group">
+  <label>Gender</label>
+  <select th:field="*{gender}" name="gender">
+    <option value="unisex">Unisex</option>
+    <option value="mens">Men's</option>
+    <option value="womens">Women's</option>
+    <option value="children">Children</option>
+  </select>
+</div>
+
+          </div>
+        </div>
+
+        <!-- ── Section: Category Image ── -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <i class="fas fa-image"></i> Category Image
+          </div>
+
+          <div class="image-upload-wrap">
+            <div class="image-upload-box"
+                 onclick="document.getElementById('categoryFileInput').click()">
+              <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+              <div class="upload-text">Click to upload image</div>
+              <div class="upload-hint">PNG, JPG, WEBP — max 2MB</div>
+              <input id="categoryFileInput"
+                     type="file" name="imageFile"
+                     accept="image/*"
+                     style="display:none"
+                     onchange="previewImage(this, 'categoryPreview')"/>
+            </div>
+
+           <div class="image-preview-wrap" id="previewWrap"
+     th:style="${category.imageUrl != null and !#strings.isEmpty(category.imageUrl)} ? 'display:flex' : 'display:none'">
+  <img id="categoryPreview" class="image-preview"
+       th:src="${category.imageUrl != null and !#strings.isEmpty(category.imageUrl)} ? ${category.imageUrl} : ''"
+       alt="Category Preview"/>
+              <button type="button" class="remove-preview-btn"
+                      onclick="removePreview()">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ── Form Actions ── -->
+        <div class="form-actions">
+          <a th:href="@{/admin/categories}" class="btn-cancel">
+            <i class="fas fa-times"></i> Cancel
+          </a>
+          <button type="submit" class="btn-save">
+            <i class="fas fa-save"></i>
+            <span th:text="${category.id != null} ? 'Update Category' : 'Save Category'">Save</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </main>
+
+</div>
+
+<script>
+  function previewImage(input, previewId) {
+    const preview     = document.getElementById(previewId);
+    const previewWrap = document.getElementById('previewWrap');
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        preview.src = e.target.result;
+        previewWrap.style.display = 'flex';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  function removePreview() {
+    document.getElementById('categoryPreview').src          = '';
+    document.getElementById('previewWrap').style.display   = 'none';
+    document.getElementById('categoryFileInput').value      = '';
+    document.querySelector('input[name="imageUrl"]').value  = '';
+  }
+</script>
+
+</body>
+</html>

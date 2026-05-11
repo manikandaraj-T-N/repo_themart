@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+
+
+
+
+  <title>My Cart — TheMart</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" th:href="@{/css/home.css}"/>
+  <link rel="stylesheet" th:href="@{/css/cart.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<main class="cart-page">
+
+  <!-- Breadcrumb -->
+  <div class="cart-breadcrumb">
+    <a th:href="@{/}">Home</a>
+    <span>/</span>
+    <span>Cart</span>
+  </div>
+
+  <h2 class="cart-page-title">Your Cart 🛒</h2>
+
+  <!-- Flash Messages -->
+  <div th:if="${successMessage}" class="alert alert-success">
+    <i class="fas fa-circle-check"></i>
+    <span th:text="${successMessage}">Success</span>
+  </div>
+  <div th:if="${errorMessage}" class="alert alert-error">
+    <i class="fas fa-circle-exclamation"></i>
+    <span th:text="${errorMessage}">Error</span>
+  </div>
+
+  <!-- ── EMPTY CART ── -->
+  <div th:if="${#lists.isEmpty(cartItems)}" class="empty-cart">
+    <div class="empty-icon">🛒</div>
+    <h3>Your cart is empty!</h3>
+    <p>Looks like you haven't added anything yet.</p>
+    <a th:href="@{/shop}" class="btn-shop">
+      <i class="fas fa-arrow-left"></i> Continue Shopping
+    </a>
+  </div>
+
+  <!-- ── CART CONTENT ── -->
+  <div th:unless="${#lists.isEmpty(cartItems)}" class="cart-layout">
+
+    <!-- Left: Items Table -->
+    <div class="cart-card">
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="item : ${cartItems}">
+
+            <!-- Product -->
+            <td>
+              <div class="product-cell">
+                <img alt="cart-img" th:src="${item.product.imageUrl} ?: '/images/placeholder.jpg'"
+                     th:alt="${item.product.name}"
+                     class="cart-item-img"/>
+                <div class="product-cell-info">
+                  <span class="product-cell-name" th:text="${item.product.name}">Product</span>
+                  <span class="product-cell-unit" th:text="${item.product.unit}">pcs</span>
+                </div>
+              </div>
+            </td>
+
+            <!-- Price -->
+            <td class="price-cell"
+                th:text="'$' + ${#numbers.formatDecimal(item.product.price, 1, 2)}">$0.00</td>
+
+            <!-- Quantity -->
+            <td>
+              <form th:action="@{/cart/update/{id}(id=${item.id})}" method="post" class="qty-form">
+                <div class="qty-wrapper">
+                  <input title="quantity-updates" 
+                          type="number"
+                          name="quantity"
+                          th:attr="data-id=${item.id}"
+                          th:value="${item.quantity}"
+                          min="0"
+                          max="99"
+                          class="qty-input"/>
+
+                  <button title="Update quantity" type="submit" class="btn-update">
+                    <i class="fas fa-rotate-right"></i>
+                  </button>
+                </div>
+              </form>
+            </td>
+
+            <!-- Subtotal -->
+            <td class="subtotal-cell">
+              <strong th:text="'$' + ${#numbers.formatDecimal(item.product.price * item.quantity, 1, 2)}">$0.00</strong>
+            </td>
+
+            <!-- Remove -->
+            <td>
+              <form th:action="@{/cart/remove/{id}(id=${item.id})}" method="post">
+                <button type="submit" class="btn-remove" title="Remove item">
+                  <i class="fas fa-trash-can"></i>
+                </button>
+              </form>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Table Footer -->
+      <div class="cart-table-footer">
+        <a th:href="@{/shop}" class="btn-continue">
+          <i class="fas fa-arrow-left"></i> Continue Shopping
+        </a>
+        <form th:action="@{/cart/clear}" method="post">
+          <button type="submit" class="btn-clear">
+            <i class="fas fa-trash"></i> Clear Cart
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right: Order Summary -->
+    <div class="cart-summary">
+      <div class="summary-title">Order Summary</div>
+
+      <!-- Subtotal -->
+      <div class="summary-row">
+        <span>Subtotal (<span th:text="${cartCount}">0</span> items)</span>
+        <span id="summarySubtotal"
+              th:text="'$' + ${#numbers.formatDecimal(cartTotal, 1, 2)}">$0.00</span>
+      </div>
+
+      <!-- Delivery -->
+      <div class="summary-row">
+        <span>Delivery</span>
+        <span id="deliveryDisplay"
+              th:text="${cartTotal >= 55} ? 'FREE' : '$5.00'"
+              th:class="${cartTotal >= 55} ? 'badge-yes' : ''">$5.00</span>
+      </div>
+
+      <!-- Free delivery hint -->
+      <div class="free-delivery-hint"
+           th:style="${cartTotal >= 55} ? 'display:none' : 'display:flex'">
+        <i class="fas fa-truck"></i>
+        Add $<span id="freeDeliveryRemaining"
+                   th:text="${#numbers.formatDecimal(55 - cartTotal, 1, 2)}">0.00</span> more for FREE delivery!
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <!-- Total -->
+      <div class="summary-row total">
+        <span>Total</span>
+        <span id="grandTotal"
+              th:text="${cartTotal >= 55} ? '$' + ${#numbers.formatDecimal(cartTotal, 1, 2)} : '$' + ${#numbers.formatDecimal(cartTotal + 5, 1, 2)}">$0.00</span>
+      </div>
+
+      <a th:href="@{/checkout}" class="btn-checkout">
+        Proceed to Checkout <i class="fas fa-arrow-right"></i>
+      </a>
+
+      <!-- Promo Code -->
+      <div class="promo-section">
+        <div class="promo-label">Have a promo code?</div>
+        <div class="promo-row">
+          <input type="text" class="promo-input" placeholder="Enter code…"/>
+          <button class="btn-promo">Apply</button>
+        </div>
+      </div>
+
+      <!-- Trust Badges -->
+      <div class="trust-badges">
+        <div class="trust-item">
+          <i class="fas fa-lock"></i>
+          <span>Secure Checkout</span>
+        </div>
+        <div class="trust-item">
+          <i class="fas fa-rotate-left"></i>
+          <span>Easy Returns</span>
+        </div>
+        <div class="trust-item">
+          <i class="fas fa-shield-halved"></i>
+          <span>100% Secure</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div th:replace="~{fragments/layout :: brand-directory}"></div>
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+<script>
+document.querySelectorAll('.qty-input').forEach(input => {
+
+input.addEventListener('change', function () {
+  const itemId = this.dataset.id;
+  const qty = parseInt(this.value) || 1;
+  const row = this.closest('tr');
+
+  // Spring Security auto-injects this hidden input into every <form>
+  const csrfToken = document.querySelector('input[name="_csrf"]')?.value;
+
+  fetch(`/cart/update/${itemId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-CSRF-TOKEN': csrfToken
+    },
+    body: `quantity=${qty}`
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.success) { alert(data.error); return; }
+    const item = data.items.find(i => i.id == itemId);
+    row.querySelector('.subtotal-cell strong').textContent =
+      '$' + item.subtotal.toFixed(2);
+    updateSummary(data.cartTotal);
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Update failed");
+  });
+});
+
+});
+
+
+function updateSummary(subtotal) {
+
+  const delivery = subtotal >= 55 ? 0 : 5;
+  const total = subtotal + delivery;
+
+  document.getElementById('summarySubtotal').textContent =
+    '$' + subtotal.toFixed(2);
+
+  document.getElementById('grandTotal').textContent =
+    '$' + total.toFixed(2);
+
+  const deliveryEl = document.getElementById('deliveryDisplay');
+
+  if (delivery === 0) {
+    deliveryEl.textContent = 'FREE';
+    deliveryEl.className = 'badge-yes';
+  } else {
+    deliveryEl.textContent = '$5.00';
+    deliveryEl.className = '';
+  }
+
+  const hint = document.querySelector('.free-delivery-hint');
+
+  if (subtotal >= 55) {
+    hint.style.display = 'none';
+  } else {
+    hint.style.display = 'flex';
+    document.getElementById('freeDeliveryRemaining').textContent =
+      (55 - subtotal).toFixed(2);
+  }
+}
+</script>
+
+</body>
+</html>

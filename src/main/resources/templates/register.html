@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - TheMart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" th:href="@{/css/register.css}"/>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- LEFT PANEL -->
+  <div class="left">
+    <div class="brand-logo">The<span>Mart</span></div>
+    <div class="left-body">
+      <div class="eyebrow">Join us today</div>
+      <h2>Shop <em>smarter,</em><br>live better.</h2>
+      <p>Create your free account and unlock exclusive deals, faster checkout, and personalised recommendations.</p>
+      <div class="feature"><div class="feat-dot"></div><span class="feat-label">Access to 10,000+ products</span></div>
+      <div class="feature"><div class="feat-dot"></div><span class="feat-label">Exclusive member-only discounts</span></div>
+      <div class="feature"><div class="feat-dot"></div><span class="feat-label">Order tracking & easy returns</span></div>
+      <div class="feature"><div class="feat-dot"></div><span class="feat-label">Free delivery on orders over ₹499</span></div>
+    </div>
+    <div class="left-foot">
+      <p>"Signing up took 30 seconds and I saved 40% on my first order. Absolutely love TheMart!"</p>
+      <div class="reviewer">
+        <div class="reviewer-avatar">SR</div>
+        <div>
+          <div class="reviewer-name">Sneha R.</div>
+          <div class="reviewer-stars">★★★★★</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+    <div class="register-box" id="registerBox">
+
+      <div class="register-header">
+        <div class="tag">Get started</div>
+        <h3>Create your account</h3>
+        <p>Fill in the details below to join TheMart</p>
+      </div>
+
+      <!-- Server error -->
+      <div th:if="${error}" class="alert alert-err">
+        <span class="alert-icon"><i class="fas fa-exclamation"></i></span>
+        <span th:text="${error}"></span>
+      </div>
+
+      <form th:action="@{/register}" th:object="${registerRequest}"
+            method="post" id="registerForm" novalidate>
+
+         <input type="hidden" name="isGoogleUser" th:value="${isGoogleUser} ?: false" />
+
+        <!-- Name + Email row -->
+        <div class="form-row">
+          <div class="fg">
+            <label for="name">Full Name</label>
+            <div class="inp-wrap">
+              <span class="pfx"><i class="fas fa-user"></i></span>
+              <input type="text" id="name" th:field="*{name}"
+                     placeholder="John Doe" autocomplete="name"/>
+            </div>
+            <span class="field-err" id="nameErr"></span>
+          </div>
+
+          <div class="fg">
+            <label for="email">Email Address</label>
+            <div class="inp-wrap">
+              <span class="pfx"><i class="fas fa-envelope"></i></span>
+              <input type="email" id="email" th:field="*{email}"
+       placeholder="you@example.com" autocomplete="email"
+       th:attr="readonly=${isGoogleUser}" />
+            </div>
+            <span class="field-err" id="emailErr"></span>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="fg">
+          <label for="password">Password</label>
+           <div th:if="${isGoogleUser}" class="alert alert-info">
+  You signed up using Google. Please set a password to continue.
+</div>
+          <div class="inp-wrap">
+           
+            <span class="pfx"><i class="fas fa-lock"></i></span>
+            <input type="password" id="password" th:field="*{password}"
+                   placeholder="Create a strong password" autocomplete="new-password"/>
+            <button type="button" class="pw-toggle" id="pwToggle1" title="Toggle">
+              <i class="fas fa-eye" id="eyeIcon1"></i>
+            </button>
+          </div>
+          <span class="field-err" id="passErr"></span>
+
+          <!-- Strength bar -->
+          <div class="strength-wrap" id="strengthWrap" style="display:none">
+            <div class="strength-bar">
+              <div class="strength-fill" id="strengthFill"></div>
+            </div>
+            <span class="strength-label" id="strengthLabel">Weak</span>
+          </div>
+
+          <!-- Rules -->
+          <ul class="pwd-rules" id="pwdRules" style="display:none">
+            <li id="rule-len">    <span class="ri">○</span> At least 8 characters</li>
+            <li id="rule-upper">  <span class="ri">○</span> One uppercase letter</li>
+            <li id="rule-lower">  <span class="ri">○</span> One lowercase letter</li>
+            <li id="rule-num">    <span class="ri">○</span> One number (0–9)</li>
+            <li id="rule-special"><span class="ri">○</span> One special character</li>
+          </ul>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="fg">
+          <label for="confirmPassword">Confirm Password</label>
+          <div class="inp-wrap">
+            <span class="pfx"><i class="fas fa-key"></i></span>
+            <input type="password" id="confirmPassword"
+                   placeholder="Re-enter your password" autocomplete="new-password"/>
+            <button type="button" class="pw-toggle" id="pwToggle2" title="Toggle">
+              <i class="fas fa-eye" id="eyeIcon2"></i>
+            </button>
+          </div>
+          <span class="field-err" id="confirmErr"></span>
+        </div>
+
+        <!-- Terms -->
+        <div class="terms-row">
+          <label class="check-label">
+            <input type="checkbox" id="terms"/>
+            <span class="checkmark"></span>
+            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+          </label>
+          <span class="field-err" id="termsErr"></span>
+        </div>
+
+        <button type="submit" class="submit-btn" id="registerBtn">
+          <!-- <span id="btnLabel">Create Account</span>
+            -->
+          <span id="btnLabel" th:text="${isGoogleUser} ? 'Set Password & Continue' : 'Create Account'"></span>
+          <i class="fas fa-arrow-right" id="btnIcon"></i>
+        </button>
+
+      </form>
+
+      <div class="divider"><hr><span>or sign up with</span><hr></div>
+
+      <div class="social-row">
+        <a href="/oauth2/authorization/google" class="soc-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          Google
+        </a>
+        <a href="/oauth2/authorization/facebook" class="soc-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="#1877F2">
+            <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047v-2.66c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+          </svg>
+          Facebook
+        </a>
+      </div>
+
+      <div class="extra">
+        <p>Already have an account? <a th:href="@{/login}">Login</a></p>
+        <p><a th:href="@{/}">← Back to home</a></p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const rules = {
+    len:     { el: document.getElementById('rule-len'),     test: v => v.length >= 8 },
+    upper:   { el: document.getElementById('rule-upper'),   test: v => /[A-Z]/.test(v) },
+    lower:   { el: document.getElementById('rule-lower'),   test: v => /[a-z]/.test(v) },
+    num:     { el: document.getElementById('rule-num'),     test: v => /[0-9]/.test(v) },
+    special: { el: document.getElementById('rule-special'), test: v => /[^A-Za-z0-9]/.test(v) },
+  };
+
+  const strengthLabels = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
+  const strengthColors = ['', '#e74c3c', '#e67e22', '#f1c40f', '#2ecc71', '#27ae60'];
+
+  function setErr(inp, el, msg) {
+    inp.classList.add('invalid');
+    inp.classList.remove('valid');
+    el.textContent = msg;
+    el.style.display = 'block';
+    return false;
+  }
+  function clearErr(inp, el) {
+    inp.classList.remove('invalid');
+    inp.classList.add('valid');
+    el.textContent = '';
+    el.style.display = 'none';
+    return true;
+  }
+
+  const nameEl    = document.getElementById('name');
+  const emailEl   = document.getElementById('email');
+  const passEl    = document.getElementById('password');
+  const confirmEl = document.getElementById('confirmPassword');
+  const termsEl   = document.getElementById('terms');
+  const nameErr    = document.getElementById('nameErr');
+  const emailErr   = document.getElementById('emailErr');
+  const passErr    = document.getElementById('passErr');
+  const confirmErr = document.getElementById('confirmErr');
+  const termsErr   = document.getElementById('termsErr');
+
+  function validateName() {
+    const v = nameEl.value.trim();
+    if (!v) return setErr(nameEl, nameErr, 'Full name is required.');
+    if (v.length < 2) return setErr(nameEl, nameErr, 'At least 2 characters.');
+    if (!/^[a-zA-Z\s]+$/.test(v)) return setErr(nameEl, nameErr, 'Letters and spaces only.');
+    return clearErr(nameEl, nameErr);
+  }
+  function validateEmail() {
+    const v = emailEl.value.trim();
+    if (!v) return setErr(emailEl, emailErr, 'Email is required.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) return setErr(emailEl, emailErr, 'Enter a valid email.');
+    return clearErr(emailEl, emailErr);
+  }
+  function validatePass() {
+    const v = passEl.value;
+    if (!v) return setErr(passEl, passErr, 'Password is required.');
+    if (Object.values(rules).filter(r => r.test(v)).length < 5)
+      return setErr(passEl, passErr, 'Password does not meet all requirements.');
+    return clearErr(passEl, passErr);
+  }
+  function validateConfirm() {
+    if (!confirmEl.value) return setErr(confirmEl, confirmErr, 'Please confirm your password.');
+    if (confirmEl.value !== passEl.value) return setErr(confirmEl, confirmErr, 'Passwords do not match.');
+    return clearErr(confirmEl, confirmErr);
+  }
+  function validateTerms() {
+    if (!termsEl.checked) {
+      termsErr.textContent = 'You must agree to the terms.';
+      termsErr.style.display = 'block';
+      return false;
+    }
+    termsErr.textContent = '';
+    termsErr.style.display = 'none';
+    return true;
+  }
+
+  nameEl.addEventListener('blur', validateName);
+  nameEl.addEventListener('input', () => { if (nameEl.classList.contains('invalid')) validateName(); });
+
+  emailEl.addEventListener('blur', validateEmail);
+  emailEl.addEventListener('input', () => { if (emailEl.classList.contains('invalid')) validateEmail(); });
+
+  passEl.addEventListener('input', () => {
+    const v = passEl.value;
+    document.getElementById('strengthWrap').style.display = v ? 'flex' : 'none';
+    document.getElementById('pwdRules').style.display = v ? 'block' : 'none';
+    updateRules(v);
+    updateStrength(v);
+    if (passEl.classList.contains('invalid')) validatePass();
+    if (confirmEl.value) validateConfirm();
+  });
+  passEl.addEventListener('blur', validatePass);
+
+  confirmEl.addEventListener('blur', validateConfirm);
+  confirmEl.addEventListener('input', () => { if (confirmEl.classList.contains('invalid')) validateConfirm(); });
+
+  document.getElementById('registerForm').addEventListener('submit', e => {
+    const ok = validateName() && validateEmail() && validatePass() && validateConfirm() && validateTerms();
+
+    if (!ok) {
+      e.preventDefault();
+      document.getElementById('registerBox').classList.add('shake');
+      setTimeout(() => document.getElementById('registerBox').classList.remove('shake'), 400);
+      return;
+    }
+    document.getElementById('btnLabel').textContent = 'Creating…';
+    document.getElementById('btnIcon').className = 'fas fa-spinner fa-spin';
+    document.getElementById('registerBtn').disabled = true;
+  });
+
+  function updateStrength(v) {
+    const score = Object.values(rules).filter(r => r.test(v)).length;
+    document.getElementById('strengthFill').style.width = (score * 20) + '%';
+    document.getElementById('strengthFill').style.background = strengthColors[score];
+    document.getElementById('strengthLabel').textContent = strengthLabels[score];
+    document.getElementById('strengthLabel').style.color = strengthColors[score];
+  }
+  function updateRules(v) {
+    Object.values(rules).forEach(rule => {
+      const icon = rule.el.querySelector('.ri');
+      if (rule.test(v)) {
+        rule.el.className = 'rule-ok';
+        icon.textContent = '✓';
+      } else {
+        rule.el.className = v.length > 0 ? 'rule-fail' : '';
+        icon.textContent = v.length > 0 ? '✗' : '○';
+      }
+    });
+  }
+
+  function togglePw(inputId, iconId) {
+    const inp  = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    icon.className = inp.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+  }
+  document.getElementById('pwToggle1').addEventListener('click', () => togglePw('password', 'eyeIcon1'));
+  document.getElementById('pwToggle2').addEventListener('click', () => togglePw('confirmPassword', 'eyeIcon2'));
+</script>
+</body>
+</html>

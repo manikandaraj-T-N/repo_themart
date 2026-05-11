@@ -1,0 +1,215 @@
+
+    :root {
+      --pink: #FF8F9C;
+      --dark: #484848;
+      --gray: #888;
+      --border: #eee;
+      --light-gray: #f5f5f5;
+    }
+
+    .breadcrumb {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      font-size: 13px;
+      color: var(--gray);
+    }
+    .breadcrumb a { color: var(--gray); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--pink); }
+    .breadcrumb span { margin: 0 6px; }
+
+    /* Hero */
+    .sp-hero {
+      background: linear-gradient(135deg, #fff5f6 0%, #ffeef0 100%);
+      padding: 60px 24px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .sp-hero h1 {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+    .sp-hero h1 span { color: var(--pink); }
+    .sp-hero p {
+      font-size: 14px;
+      color: var(--gray);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* Payment methods badges */
+    .sp-methods {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+    .sp-method-badge {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 24px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .sp-method-badge i { color: var(--pink); font-size: 18px; }
+
+    /* Content */
+    .sp-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+
+    /* Feature cards */
+    .sp-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 56px;
+    }
+    .sp-feature-card {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      text-align: center;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .sp-feature-card:hover {
+      box-shadow: 0 8px 24px rgba(255,143,156,0.15);
+      border-color: #FFD6DB;
+    }
+    .sp-feature-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #fff5f6, #FFD6DB);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: var(--pink);
+      margin: 0 auto 16px;
+    }
+    .sp-feature-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 8px;
+    }
+    .sp-feature-card p {
+      font-size: 13px;
+      color: var(--gray);
+      line-height: 1.7;
+    }
+
+    /* Sections */
+    .sp-section {
+      margin-bottom: 40px;
+    }
+    .sp-section h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #FFD6DB;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sp-section h2 i { color: var(--pink); font-size: 16px; }
+    .sp-section p {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.9;
+      margin-bottom: 10px;
+    }
+    .sp-section ul {
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .sp-section ul li {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.8;
+    }
+    .sp-section ul li::marker { color: var(--pink); }
+
+    .sp-highlight {
+      background: var(--light-gray);
+      border-left: 4px solid var(--pink);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      font-size: 13px;
+      color: var(--dark);
+      line-height: 1.8;
+      margin-top: 12px;
+    }
+
+    /* Payment logos row */
+    .sp-logos {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      align-items: center;
+    }
+    .sp-logo {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .sp-logo.visa    { color: #1a1f71; }
+    .sp-logo.gpay    { color: #4285f4; }
+    .sp-logo.amazon  { color: #f90; }
+    .sp-logo.paypal  { color: #003087; }
+    .sp-logo.master  { color: #eb001b; }
+
+    .contact-box {
+      background: linear-gradient(135deg, #fff5f6, #ffeef0);
+      border: 1.5px solid #FFD6DB;
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .contact-box a {
+      color: var(--pink);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .contact-box a:hover { text-decoration: underline; }
+    .contact-box span { font-size: 13px; color: var(--gray); }
+
+    .sp-updated {
+      text-align: center;
+      font-size: 12px;
+      color: #bbb;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 768px) {
+      .sp-features { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .sp-features { grid-template-columns: 1fr; }
+    }

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security6" lang="en">
+<head>
+  <title>My Profile - TheMart</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" th:href="@{/css/home.css}"/>
+  <link rel="stylesheet" th:href="@{/css/profile.css}"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<!-- Add after the topbar -->
+<div th:if="${param.newUser}" class="profile-toast success" style="margin:20px auto;max-width:1100px;">
+  <i class="fas fa-circle-check"></i>
+  Welcome to TheMart! Please complete your profile details below.
+</div>
+
+<!-- Breadcrumb -->
+<div style="background:#484848;padding:14px 40px;display:flex;align-items:center;
+            gap:10px;font-size:13px;color:#aaa;">
+  <a th:href="@{/home}" style="color:#FF8F9C;text-decoration:none;">
+    <i class="fas fa-home"></i>
+  </a>
+  <span style="color:#555;">›</span>
+  <span style="color:#ccc;">My Profile</span>
+</div>
+
+<div class="profile-page">
+  <div class="profile-layout">
+
+    <!-- ══════════════ SIDEBAR ══════════════ -->
+    <aside class="profile-sidebar">
+
+      <!-- Avatar -->
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar" id="avatarDisplay"
+             th:style="${user.profileImage != null and !#strings.isEmpty(user.profileImage)}
+                        ? 'background-image: url(' + ${user.profileImage} + ');
+                           background-size: cover;
+                           background-position: center;
+                           font-size: 0;'
+                        : ''">
+          <span id="avatarInitial"
+                th:if="${user.profileImage == null or #strings.isEmpty(user.profileImage)}"
+                th:text="${#strings.toUpperCase(#strings.substring(user.name, 0, 1))}">
+            U
+          </span>
+        </div>
+        <label for="profileImageInput" class="avatar-camera" title="Change photo">
+          <i class="fas fa-camera"></i>
+        </label>
+        <input type="file" id="profileImageInput" accept="image/*"
+               style="display:none;" onchange="previewAndUpload(this)"/>
+      </div>
+
+      <!-- Name & Email -->
+      <div class="profile-sidebar-info">
+        <h2 th:text="${user.name}">User Name</h2>
+        <p th:text="${user.email}">email@example.com</p>
+        <div class="member-badge">
+          <i class="fas fa-star"></i>
+          <span th:text="'Member since ' + ${#temporals.format(user.createdAt, 'MMM yyyy')}">
+            Member since Jan 2024
+          </span>
+        </div>
+      </div>
+
+      <!-- Nav Links -->
+      <nav class="profile-nav">
+        <a th:href="@{/profile}" class="profile-nav-item active">
+          <i class="fas fa-user-circle"></i> My Profile
+        </a>
+        <a th:href="@{/orders}" class="profile-nav-item">
+          <i class="fas fa-box-open"></i> My Orders
+        </a>
+        <a th:href="@{/wishlist}" class="profile-nav-item">
+          <i class="fas fa-heart"></i> Wishlist
+        </a>
+        <a th:href="@{/cart}" class="profile-nav-item">
+          <i class="fas fa-shopping-bag"></i> My Cart
+        </a>
+        <div sec:authorize="hasRole('ADMIN')">
+          <a th:href="@{/admin/dashboard}" class="profile-nav-item"
+             style="color:rgba(255,143,156,0.7);">
+            <i class="fas fa-shield-alt"></i> Admin Panel
+          </a>
+        </div>
+        <a th:href="@{/logout}" class="profile-nav-item logout">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </nav>
+
+    </aside>
+
+    <!-- ══════════════ CONTENT ══════════════ -->
+    <div class="profile-content">
+
+      <!-- Success Toast -->
+      <div class="profile-toast success" th:if="${successMessage}">
+        <i class="fas fa-check-circle"></i>
+        <span th:text="${successMessage}">Profile updated!</span>
+      </div>
+
+      <!-- ── VIEW MODE ── -->
+      <div id="viewSection">
+
+        <!-- Personal Info Card -->
+        <div class="profile-card">
+          <div class="profile-card-header">
+            <div class="profile-card-title">
+              <i class="fas fa-user-circle"></i> Personal Information
+            </div>
+            <button class="btn-edit" onclick="toggleEdit(true)">
+              <i class="fas fa-pen"></i> Edit Profile
+            </button>
+          </div>
+          <div class="profile-fields-grid">
+            <div class="profile-field">
+              <label>Full Name</label>
+              <p th:text="${user.name} ?: '—'">—</p>
+            </div>
+            <div class="profile-field">
+              <label>Email Address</label>
+              <p th:text="${user.email} ?: '—'">—</p>
+            </div>
+            <div class="profile-field">
+              <label>Phone Number</label>
+              <p th:text="${user.phone} ?: 'Not provided'">—</p>
+            </div>
+            <div class="profile-field">
+              <label>Member Since</label>
+              <p th:text="${#temporals.format(user.createdAt, 'dd MMMM yyyy')}">—</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Address Card -->
+        <div class="profile-card">
+          <div class="profile-card-header">
+            <div class="profile-card-title">
+              <i class="fas fa-map-marker-alt"></i> Delivery Address
+            </div>
+          </div>
+          <div class="profile-fields-grid">
+            <div class="profile-field full">
+              <label>Street Address</label>
+              <p th:text="${user.address} ?: 'Not provided'">—</p>
+            </div>
+            <div class="profile-field">
+              <label>City</label>
+              <p th:text="${user.city} ?: 'Not provided'">—</p>
+            </div>
+            <div class="profile-field">
+              <label>Pincode</label>
+              <p th:text="${user.pincode} ?: 'Not provided'">—</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── EDIT MODE ── -->
+      <div id="editSection" style="display:none;">
+        <form th:action="@{/profile/update}" method="post">
+
+          <!-- Personal Info -->
+          <div class="profile-card">
+            <div class="profile-card-header">
+              <div class="profile-card-title">
+                <i class="fas fa-user-circle"></i> Personal Information
+              </div>
+            </div>
+            <div class="edit-section-label">Basic Details</div>
+            <div class="profile-fields-grid">
+              <div class="profile-field">
+                <label>Full Name <span class="req">*</span></label>
+                <input type="text" name="name"
+                       th:value="${user.name}"
+                       placeholder="Your full name" required/>
+              </div>
+              <div class="profile-field">
+                <label>Email Address <span class="req">*</span></label>
+                <input type="email" name="email"
+                       th:value="${user.email}"
+                       placeholder="your@email.com" required/>
+              </div>
+              <div class="profile-field">
+                <label>Phone Number</label>
+                <input type="text" name="phone"
+                       th:value="${user.phone}"
+                       placeholder="+91 99999 99999"/>
+              </div>
+            </div>
+          </div>
+
+          <!-- Address -->
+          <div class="profile-card" style="margin-top:20px;">
+            <div class="profile-card-header">
+              <div class="profile-card-title">
+                <i class="fas fa-map-marker-alt"></i> Delivery Address
+              </div>
+            </div>
+            <div class="edit-section-label">Shipping Info</div>
+            <div class="profile-fields-grid">
+              <div class="profile-field full">
+                <label>Street Address</label>
+                <input type="text" name="address"
+                       th:value="${user.address}"
+                       placeholder="House no, Street, Area"/>
+              </div>
+              <div class="profile-field">
+                <label>City</label>
+                <input type="text" name="city"
+                       th:value="${user.city}"
+                       placeholder="Enter city"/>
+              </div>
+              <div class="profile-field">
+                <label>Pincode</label>
+                <input type="text" name="pincode"
+                       th:value="${user.pincode}"
+                       placeholder="Enter pincode"/>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="edit-actions">
+              <button type="submit" class="btn-save">
+                <i class="fas fa-save"></i> Save Changes
+              </button>
+              <button type="button" class="btn-cancel" onclick="toggleEdit(false)">
+                Cancel
+              </button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- ── Quick Links ── -->
+      <div class="profile-card">
+        <div class="profile-card-header">
+          <div class="profile-card-title">
+            <i class="fas fa-th-large"></i> Quick Links
+          </div>
+        </div>
+        <div class="quick-links">
+          <a th:href="@{/orders}" class="quick-link">
+            <div class="quick-link-icon">
+              <i class="fas fa-box-open"></i>
+            </div>
+            <span>My Orders</span>
+          </a>
+          <a th:href="@{/wishlist}" class="quick-link">
+            <div class="quick-link-icon">
+              <i class="fas fa-heart"></i>
+            </div>
+            <span>Wishlist</span>
+          </a>
+          <a th:href="@{/cart}" class="quick-link">
+            <div class="quick-link-icon">
+              <i class="fas fa-shopping-bag"></i>
+            </div>
+            <span>My Cart</span>
+          </a>
+          <a th:href="@{/shop}" class="quick-link">
+            <div class="quick-link-icon">
+              <i class="fas fa-store"></i>
+            </div>
+            <span>Shop</span>
+          </a>
+        </div>
+      </div>
+
+    </div><!-- end profile-content -->
+  </div><!-- end profile-layout -->
+</div><!-- end profile-page -->
+
+<div th:replace="~{fragments/layout :: brand-directory}"></div>
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+<script>
+  function toggleEdit(show) {
+    document.getElementById('editSection').style.display = show ? 'block' : 'none';
+    document.getElementById('viewSection').style.display = show ? 'none' : 'block';
+    if (show) {
+      document.getElementById('editSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function previewAndUpload(input) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+
+    // Instant preview
+    const reader = new FileReader();
+    reader.onload = e => {
+      const avatar = document.getElementById('avatarDisplay');
+      avatar.style.backgroundImage  = `url(${e.target.result})`;
+      avatar.style.backgroundSize   = 'cover';
+      avatar.style.backgroundPosition = 'center';
+      avatar.style.fontSize = '0';
+      const initial = document.getElementById('avatarInitial');
+      if (initial) initial.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+
+    // Upload
+    const fd = new FormData();
+    fd.append('file', file);
+    fetch('/profile/upload-image', { method: 'POST', body: fd })
+      .then(r => r.json())
+      .then(d => showToast(d.success ? '✅ Profile picture updated!' : '❌ Upload failed.', d.success))
+      .catch(() => showToast('❌ Upload failed.', false));
+  }
+
+  function showToast(msg, success) {
+    const t = document.createElement('div');
+    t.className = `profile-toast js ${success ? 'success' : 'error'}`;
+    t.innerHTML = `<i class="fas fa-${success ? 'check-circle' : 'times-circle'}"></i> ${msg}`;
+    document.body.appendChild(t);
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+  }
+</script>
+
+</body>
+</html>

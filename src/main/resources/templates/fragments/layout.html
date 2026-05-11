@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layout</title>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <div th:fragment="topbar" class="topbar">
+  <div class="topbar-inner">
+
+    <!-- Left: social icons -->
+    <div class="topbar-left">
+  <a href="https://facebook.com/themart" target="_blank" title="Facebook">
+    <i class="fab fa-facebook-f"></i>
+  </a>
+
+  <a href="https://twitter.com/themart" target="_blank" title="Twitter">
+    <i class="fab fa-twitter"></i>
+  </a>
+
+  <a href="https://instagram.com/themart" target="_blank" title="Instagram">
+    <i class="fab fa-instagram"></i>
+  </a>
+
+  <a href="https://linkedin.com/company/themart" target="_blank" title="LinkedIn">
+    <i class="fab fa-linkedin-in"></i>
+  </a>
+</div>
+
+    <!-- Center: shipping text -->
+    <div class="topbar-center">
+      FREE SHIPPING THIS WEEK ORDER OVER – $55
+    </div>
+
+    <!-- Right: currency + language -->
+    <div class="topbar-right">
+      <div class="topbar-select">
+        <select title="currency-type">
+          <option>USD $</option>
+          <option>EUR €</option>
+          <option>GBP £</option>
+          <option>INR ₹</option>
+        </select>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="topbar-divider">|</div>
+      <div class="topbar-select">
+        <select title="language">
+          <option>ENGLISH</option>
+          <option>FRENCH</option>
+          <option>SPANISH</option>
+          <option>HINDI</option>
+        </select>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </div>
+
+  </div>
+</div>
+  
+<header th:fragment="header">
+  <div class="header-inner">
+    <!-- Row 1: Logo + Search + Actions -->
+    <div class="header-top">
+
+      <a href="/home">
+        <div class="logo">
+          <div class="logo-name">The<span>Mart</span></div>
+          <div class="logo-tag">Fashion · Style · Trend</div>
+        </div>
+      </a>
+
+      <div class="header-search">
+        <form th:action="@{/search}" method="get" style="display:flex;align-items:center;width:100%">
+          <span class="search-icon"><i class="fas fa-search"></i></span>
+          <input type="text" name="q" th:value="${param.q}"
+                 placeholder="Enter your product name......"/>
+          <button type="submit" title="search" class="search-btn">
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </form>
+      </div>
+
+      <div class="header-actions">
+
+        <!-- Wishlist -->
+        <a th:href="@{/wishlist}" class="icon-btn" title="Wishlist">
+          <i class="far fa-heart"></i>
+          <span class="cart-badge" id="wishlistCount"
+                th:text="${wishlistCount} ?: '0'">0</span>
+        </a>
+
+        <!-- Cart -->
+        <a th:href="@{/cart}" class="icon-btn" title="Cart">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="cart-badge" id="cartCount"
+                th:text="${cartCount} ?: '0'">0</span>
+        </a>
+
+        <!-- User Menu -->
+        <div class="user-menu-wrap">
+
+          <!-- LOGGED IN -->
+          <div sec:authorize="isAuthenticated()" class="user-menu">
+            <button class="avatar-btn" onclick="toggleUserMenu(event)" title="Account menu">
+              <img th:src="${currentUser?.profileImage != null
+                             ? currentUser.profileImage
+                             : '/images/profiles/default-avatar.jpg'}"
+                   onerror="this.src='/images/profiles/default-avatar.jpg'"
+                   class="avatar-img" alt="Profile"/>
+              <span class="avatar-online-dot"></span>
+            </button>
+
+            <div class="user-dropdown" id="userDropdown">
+              <div class="dropdown-header">
+                <img th:src="${currentUser?.profileImage != null
+                               ? currentUser.profileImage
+                               : '/images/profiles/default-avatar.jpg'}"
+                     onerror="this.src='/images/profiles/default-avatar.jpg'"
+                     class="dropdown-avatar" alt="Profile"/>
+                <div class="dropdown-user-info">
+                  <span class="dropdown-name" sec:authentication="name">User</span>
+                  <span class="dropdown-role">Member</span>
+                </div>
+              </div>
+
+              <div class="dropdown-divider"></div>
+
+              <a th:href="@{/profile}" class="dropdown-item">
+                <span class="di-icon"><i class="fas fa-user-circle"></i></span>
+                <span>My Profile</span>
+              </a>
+              <a th:href="@{/orders}" class="dropdown-item">
+                <span class="di-icon"><i class="fas fa-box-open"></i></span>
+                <span>My Orders</span>
+              </a>
+              <a th:href="@{/wishlist}" class="dropdown-item">
+                <span class="di-icon"><i class="fas fa-heart"></i></span>
+                <span>Wishlist</span>
+              </a>
+              <a th:href="@{/cart}" class="dropdown-item">
+                <span class="di-icon"><i class="fas fa-shopping-cart"></i></span>
+                <span>My Cart</span>
+              </a>
+
+              <!-- Admin — ADMIN role only -->
+              <div sec:authorize="hasRole('ADMIN')">
+                <div class="dropdown-divider"></div>
+                <a th:href="@{/admin/dashboard}"
+                   class="dropdown-item dropdown-item-admin">
+                  <span class="di-icon"><i class="fas fa-shield-alt"></i></span>
+                  <span>Admin Panel</span>
+                </a>
+              </div>
+
+              <div class="dropdown-divider"></div>
+
+              <a th:href="@{/logout}" class="dropdown-item dropdown-item-logout">
+                <span class="di-icon"><i class="fas fa-sign-out-alt"></i></span>
+                <span>Logout</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- NOT LOGGED IN -->
+          <div sec:authorize="!isAuthenticated()">
+            <a th:href="@{/login}" class="login-pill">
+              <i class="fas fa-user"></i>
+              <span>Login</span>
+            </a>
+          </div>
+
+        </div><!-- end user-menu-wrap -->
+
+      </div><!-- end header-actions -->
+    </div><!-- end header-top -->
+
+    <!-- Row 2: Navigation -->
+    <nav class="header-nav">
+      <ul>
+
+        <li>
+          <a th:href="@{/home}"
+             th:classappend="${currentUri != null and currentUri == '/home'} ? ' active'">
+            Home
+          </a>
+        </li>
+
+        <li class="mega-parent">
+          <a th:href="@{/shop}"
+             th:classappend="${currentUri != null and currentUri == '/shop'} ? ' active'">
+            Categories <i class="fas fa-chevron-down nav-arrow"></i>
+          </a>
+
+          <div class="mega-menu">
+            <div class="mega-inner">
+
+              <!-- Electronics -->
+              <div class="mega-col mega-col-wide">
+                <div class="mega-col-title">Electronics</div>
+                <div class="mega-two-col">
+                  <ul class="mega-links">
+                    <li><a th:href="@{/shop?category=desktop}">Desktop</a></li>
+                    <li><a th:href="@{/shop?category=laptop}">Laptop</a></li>
+                    <li><a th:href="@{/shop?category=mobile-phone}">Mobile Phone</a></li>
+                    <li><a th:href="@{/shop?category=tablet}">Tablet</a></li>
+                    <li><a th:href="@{/shop?category=headphone}">Headphone</a></li>
+                  </ul>
+                  <ul class="mega-links">
+                    <li><a th:href="@{/shop?category=smart-watch}">Smart Watch</a></li>
+                    <li><a th:href="@{/shop?category=smart-tv}">Smart TV</a></li>
+                    <li><a th:href="@{/shop?category=keyboard}">Keyboard</a></li>
+                    <li><a th:href="@{/shop?category=mouse}">Mouse</a></li>
+                    <li><a th:href="@{/shop?category=camera}">Camera</a></li>
+                  </ul>
+                </div>
+                <div class="mega-promo">
+                  <div class="mega-promo-text">
+                    <span class="promo-tag">Flat 30% off</span>
+                    <strong>Headphone Collection</strong>
+                  </div>
+                  <a th:href="@{/shop?category=headphone}" class="promo-btn">SHOP NOW</a>
+                </div>
+              </div>
+
+              <!-- Men's -->
+              <div class="mega-col">
+                <div class="mega-col-title">Men's</div>
+                <ul class="mega-links">
+                  <li><a th:href="@{/shop?category=mens-formal}">Formal</a></li>
+                  <li><a th:href="@{/shop?category=mens-casual}">Casual</a></li>
+                  <li><a th:href="@{/shop?category=sports}">Sports</a></li>
+                  <li><a th:href="@{/shop?category=jackets}">Jacket</a></li>
+                  <li><a th:href="@{/shop?category=sunglasses}">Sunglasses</a></li>
+                </ul>
+                <div class="mega-promo">
+                  <div class="mega-promo-text">
+                    <span class="promo-tag">Flat 19% off</span>
+                    <strong>Men's Fashion</strong>
+                  </div>
+                  <a th:href="@{/shop?gender=mens}" class="promo-btn">SHOP NOW</a>
+                </div>
+              </div>
+
+              <!-- Women's -->
+              <div class="mega-col">
+                <div class="mega-col-title">Women's</div>
+                <ul class="mega-links">
+                  <li><a th:href="@{/shop?category=womens-formal}">Formal</a></li>
+                  <li><a th:href="@{/shop?category=womens-casual}">Casual</a></li>
+                  <li><a th:href="@{/shop?category=perfume}">Perfume</a></li>
+                  <li><a th:href="@{/shop?category=cosmetics}">Cosmetics</a></li>
+                  <li><a th:href="@{/shop?category=bags}">Bags</a></li>
+                </ul>
+                <div class="mega-promo">
+                  <div class="mega-promo-text">
+                    <span class="promo-tag">Flat 35% off</span>
+                    <strong>Women's Fashion</strong>
+                  </div>
+                  <a th:href="@{/shop?gender=womens}" class="promo-btn">SHOP NOW</a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </li>
+
+        <li class="has-simple-dropdown">
+          <a th:href="@{/shop?gender=mens}">
+            Men's <i class="fas fa-chevron-down nav-arrow"></i>
+          </a>
+          <ul class="simple-dropdown">
+            <li><a th:href="@{/shop?category=shirt}">Shirt</a></li>
+            <li><a th:href="@{/shop?category=shorts-jeans}">Shorts &amp; Jeans</a></li>
+            <li><a th:href="@{/shop?category=shoes}">Shoes</a></li>
+            <li><a th:href="@{/shop?category=wallet}">Wallet</a></li>
+          </ul>
+        </li>
+
+        <li class="has-simple-dropdown">
+          <a th:href="@{/shop?gender=womens}">
+            Women's <i class="fas fa-chevron-down nav-arrow"></i>
+          </a>
+          <ul class="simple-dropdown">
+            <li><a th:href="@{/shop?category=dress-frock}">Dress &amp; Frock</a></li>
+            <li><a th:href="@{/shop?category=earrings}">Earrings</a></li>
+            <li><a th:href="@{/shop?category=necklace}">Necklace</a></li>
+            <li><a th:href="@{/shop?category=makeup-kit}">Makeup Kit</a></li>
+          </ul>
+        </li>
+
+        <li class="has-simple-dropdown">
+          <a th:href="@{/shop?category=perfume}">
+            Perfume <i class="fas fa-chevron-down nav-arrow"></i>
+          </a>
+          <ul class="simple-dropdown">
+            <li><a th:href="@{/shop?category=clothes-perfume}">Clothes Perfume</a></li>
+            <li><a th:href="@{/shop?category=deodorant}">Deodorant</a></li>
+            <li><a th:href="@{/shop?category=flower-fragrance}">Flower Fragrance</a></li>
+            <li><a th:href="@{/shop?category=air-freshener}">Air Freshener</a></li>
+          </ul>
+        </li>
+
+        <li class="has-simple-dropdown">
+          <a th:href="@{/shop?category=jewellery}">
+            Jewellery <i class="fas fa-chevron-down nav-arrow"></i>
+          </a>
+          <ul class="simple-dropdown">
+            <li><a th:href="@{/shop?category=earrings}">Earrings</a></li>
+            <li><a th:href="@{/shop?category=couple-rings}">Couple Rings</a></li>
+            <li><a th:href="@{/shop?category=necklace}">Necklace</a></li>
+            <li><a th:href="@{/shop?category=bracelets}">Bracelets</a></li>
+          </ul>
+        </li>
+
+        <li>
+          <a th:href="@{/blog}"
+             th:classappend="${currentUri != null and currentUri == '/blog'} ? ' active'">
+            Blog
+          </a>
+        </li>
+
+        <li>
+          <a th:href="@{/offers}"
+             th:classappend="${currentUri != null and currentUri == '/offers'} ? ' active'">
+            Hot Offers
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+
+  </div>
+
+  <script>
+    function toggleUserMenu(event) {
+      event.stopPropagation();
+      document.getElementById('userDropdown').classList.toggle('show');
+    }
+    document.addEventListener('click', function () {
+      const dd = document.getElementById('userDropdown');
+      if (dd) dd.classList.remove('show');
+    });
+  </script>
+
+</header>
+
+
+<!-- ===== BRAND DIRECTORY ===== -->
+<section th:fragment="brand-directory" class="brand-dir">
+  <div class="brand-dir-inner">
+
+    <h3 class="brand-dir-title">Brand Directory</h3>
+
+    <div class="brand-dir-list">
+
+      <div class="brand-dir-row">
+        <span class="brand-dir-label">Fashion</span>
+        <div class="brand-dir-items">
+          <a th:href="@{/shop?category=t-shirt}" class="brand-dir-link">T-Shirt</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=shirt}" class="brand-dir-link">Shirt</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=shorts-jeans}" class="brand-dir-link">Shorts &amp; Jeans</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=jackets}" class="brand-dir-link">Jackets</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=dress-frock}" class="brand-dir-link">Dress &amp; Frock</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=innerwear}" class="brand-dir-link">Innerwear</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=hosiery}" class="brand-dir-link">Hosiery</a>
+        </div>
+      </div>
+
+      <div class="brand-dir-row">
+        <span class="brand-dir-label">Footwear</span>
+        <div class="brand-dir-items">
+          <a th:href="@{/shop?category=branded-shoes}" class="brand-dir-link">Branded</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=sport-shoes}" class="brand-dir-link">Sport</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=formal-shoes}" class="brand-dir-link">Formal</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=first-copy}" class="brand-dir-link">First Copy</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=boots}" class="brand-dir-link">Boots</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=casual-shoes}" class="brand-dir-link">Casual</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=party-wear-shoes}" class="brand-dir-link">Party Wear Shoes</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=long-shoes}" class="brand-dir-link">Long Shoes</a>
+        </div>
+      </div>
+
+      <div class="brand-dir-row">
+        <span class="brand-dir-label">Jewellery</span>
+        <div class="brand-dir-items">
+          <a th:href="@{/shop?category=necklace}" class="brand-dir-link">Necklace</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=earrings}" class="brand-dir-link">Earrings</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=couple-rings}" class="brand-dir-link">Couple Rings</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=pendente}" class="brand-dir-link">Pendente</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=crystal}" class="brand-dir-link">Crystal</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=bangles}" class="brand-dir-link">Bangles</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=bracelets}" class="brand-dir-link">Bracelets</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=nosepin}" class="brand-dir-link">Nosepin</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=chain}" class="brand-dir-link">Chain</a>
+        </div>
+      </div>
+
+      <div class="brand-dir-row">
+        <span class="brand-dir-label">Cosmetics</span>
+        <div class="brand-dir-items">
+          <a th:href="@{/shop?category=shampoo}" class="brand-dir-link">Shampoo</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=bodywash}" class="brand-dir-link">Bodywash</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=facewash}" class="brand-dir-link">Facewash</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=makeup-kit}" class="brand-dir-link">Makeup Kit</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=liner}" class="brand-dir-link">Liner</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=lipstick}" class="brand-dir-link">Lipstick</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=perfume}" class="brand-dir-link">Perfume</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=body-soap}" class="brand-dir-link">Body Soap</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=scrub}" class="brand-dir-link">Scrub</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=hair-gel}" class="brand-dir-link">Hair Gel</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=hair-colors}" class="brand-dir-link">Hair Colors</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=hair-dye}" class="brand-dir-link">Hair Dye</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=sunscreen}" class="brand-dir-link">Sunscreen</a>
+          <span class="brand-dir-sep">|</span>
+          <a th:href="@{/shop?category=skin-lotion}" class="brand-dir-link">Skin Lotion</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer th:fragment="footer" style="background:#232323;padding:50px 24px 0;">
+  <div style="max-width:1300px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr 1.5fr 1fr 1.2fr;gap:32px;padding-bottom:40px;">
+
+    <div>
+      <div style="font-size:16px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:16px;text-transform:uppercase;">Popular Categories</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+        <li><a th:href="@{/shop?category=fashion}" style="color:#aaa;text-decoration:none;font-size:13px;transition:color 0.2s;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">Fashion</a></li>
+        <li><a th:href="@{/shop?category=electronics}" style="color:#aaa;text-decoration:none;font-size:13px;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">Electronic</a></li>
+        <li><a th:href="@{/shop?category=cosmetics}" style="color:#aaa;text-decoration:none;font-size:13px;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">Cosmetics</a></li>
+        <li><a th:href="@{/shop?category=health}" style="color:#aaa;text-decoration:none;font-size:13px;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">Health</a></li>
+        <li><a th:href="@{/shop?category=watch}" style="color:#aaa;text-decoration:none;font-size:13px;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">Watches</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div style="font-size:16px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:16px;text-transform:uppercase;">Products</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+        <!-- <li><a th:href="@{/shop?category=prices-drop}" style="color:#aaa;text-decoration:none;font-size:13px;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">Prices Drop</a></li> -->
+        <li><a th:href="@{/shop}" style="color:#aaa;text-decoration:none;font-size:13px;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">New Products</a></li>
+        <li><a th:href="@{/shop}" style="color:#aaa;text-decoration:none;font-size:13px;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">Best Sales</a></li>
+        <!-- <li><a th:href="@{/shop?category=sitemap}" style="color:#aaa;text-decoration:none;font-size:13px;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">Sitemap</a></li>
+        <li><a th:href="@{/shop?category=contact-us}" style="color:#aaa;text-decoration:none;font-size:13px;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">Contact Us</a></li> -->
+      </ul>
+    </div>
+
+    <div>
+      <div style="font-size:16px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:16px;text-transform:uppercase;">Our Company</div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+        <!-- <li><a th:href="@{/shop?category=delivery}" style="color:#aaa;text-decoration:none;font-size:13px;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">Delivery</a></li> -->
+        <li><a th:href="@{/legal}" style="color:#aaa;text-decoration:none;font-size:13px;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">Legal Notice</a></li>
+ <li><a th:href="@{/terms}" style="color:#aaa;text-decoration:none;font-size:13px;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">Terms And Conditions</a></li>
+        <li><a th:href="@{/shop?category=about}" style="color:#aaa;text-decoration:none;font-size:13px;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">About Us</a></li>
+     <li><a th:href="@{/secure-payment}" style="color:#aaa;text-decoration:none;font-size:13px;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">Secure Payment</a></li>
+      </ul>
+    </div>
+
+   <div>
+  <div style="font-size:16px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:16px;text-transform:uppercase;">Services</div>
+  <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+
+    <li><a th:href="@{/blog}" style="color:#aaa;text-decoration:none;font-size:13px;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">Blog</a></li>
+    <li><a th:href="@{/contact}" style="color:#aaa;text-decoration:none;font-size:13px;" onmouseover="this.style.color='#FF8F9C'" onmouseout="this.style.color='#aaa'">Contact Us</a></li>
+  </ul>
+</div>
+
+    <div>
+  <div style="font-size:16px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:16px;text-transform:uppercase;">Contact</div>
+  <div style="display:flex;flex-direction:column;gap:12px;">
+    <div style="display:flex;gap:10px;align-items:flex-start;">
+      <span style="color:var(--pink);font-size:14px;margin-top:2px;">
+        <i class="fas fa-map-marker-alt"></i>
+      </span>
+      <span style="font-size:13px;color:#aaa;line-height:1.6;">123 Fashion Street, Coimbatore,
+Tamil Nadu, India — 641001</span>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <span style="color:var(--pink);font-size:14px;">
+        <i class="fas fa-phone-alt"></i>
+      </span>
+      <a href="tel:+919876543210"
+         style="font-size:13px;color:#aaa;text-decoration:none;"
+         onmouseover="this.style.color='#FF8F9C'"
+         onmouseout="this.style.color='#aaa'">
+        +91 98765 43210
+      </a>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <span style="color:var(--pink);font-size:14px;">
+        <i class="fas fa-envelope"></i>
+      </span>
+      <a href="mailto:support@themart.com"
+         style="font-size:13px;color:#aaa;text-decoration:none;"
+         onmouseover="this.style.color='#FF8F9C'"
+         onmouseout="this.style.color='#aaa'">
+        support@themart.com
+      </a>
+    </div>
+  </div>
+</div>
+
+  </div>
+
+  <!-- Payment + Copyright -->
+  <div style="border-top:1px solid rgba(255,255,255,0.08);padding:24px 0;text-align:center;">
+    <div style="display:flex;justify-content:center;gap:12px;margin-bottom:14px;">
+      <div style="background:#fff;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;color:#1a1f71;letter-spacing:1px;">VISA</div>
+      <div style="background:#fff;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;color:#4285f4;">G Pay</div>
+      <div style="background:#fff;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;color:#f90;">amazon pay</div>
+      <div style="background:#fff;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:700;color:#003087;">PayPal</div>
+    </div>
+    <p style="font-size:13px;color:#666;">© 2026 <span style="color:var(--pink);font-weight:600;">TheMart</span>. All Rights Reserved.</p>
+  </div>
+</footer>
+
+
+</body></html>

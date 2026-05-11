@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders — TheMart</title>
+  <link rel="stylesheet" th:href="@{/css/home.css}">
+  <link rel="stylesheet" th:href="@{/css/my-orders.css}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: topbar}"></div>
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<div class="mo-page">
+  <div class="mo-inner">
+
+    <!-- Page Header -->
+    <div class="mo-page-header">
+      <div>
+        <h1 class="mo-page-title">
+          <i class="fas fa-box-open"></i> My Orders
+        </h1>
+        <p class="mo-page-sub"
+           th:text="${#lists.isEmpty(orders)} ? 'No orders placed yet' :
+                    (${#lists.size(orders)} + ' order(s) found')">
+        </p>
+      </div>
+      <a th:href="@{/shop}" class="mo-btn-shop">
+        <i class="fas fa-shopping-bag"></i> Continue Shopping
+      </a>
+    </div>
+
+    <!-- Empty State -->
+    <div th:if="${#lists.isEmpty(orders)}" class="mo-empty">
+      <div class="mo-empty-icon">
+        <i class="fas fa-box-open"></i>
+      </div>
+      <h3>No orders yet!</h3>
+      <p>Looks like you haven't placed any orders.<br/>
+         Start shopping and your orders will appear here.</p>
+      <a th:href="@{/shop}" class="mo-btn-browse">
+        <i class="fas fa-arrow-right"></i> Browse Products
+      </a>
+    </div>
+
+    <!-- Orders List -->
+    <div th:unless="${#lists.isEmpty(orders)}" class="mo-list">
+
+      <div th:each="order : ${orders}" class="mo-card">
+
+        <!-- Card Top Bar -->
+        <div class="mo-card-top">
+
+          <div class="mo-card-meta">
+            <span class="mo-order-num"
+                  th:text="'#' + ${order.orderNumber}">—</span>
+            <span class="mo-dot">•</span>
+            <span class="mo-order-date">
+              <i class="fas fa-calendar-alt"></i>
+              <span th:text="${#temporals.format(order.createdAt, 'dd MMM yyyy')}">—</span>
+            </span>
+            <span class="mo-dot">•</span>
+            <span class="mo-items-count"
+                  th:text="${#lists.size(order.orderItems)} + ' item(s)'">—</span>
+          </div>
+
+          <!-- Status Badge -->
+          <span th:class="'mo-status ' + (${order.status.name() == 'DELIVERED'} ? 'mo-status-delivered' :
+                          (${order.status.name() == 'CANCELLED'}                ? 'mo-status-cancelled' :
+                          (${order.status.name() == 'SHIPPED'}                  ? 'mo-status-shipped'   :
+                                                                                  'mo-status-pending')))"
+                th:text="${order.status}">PENDING</span>
+
+        </div>
+
+        <!-- Card Body -->
+        <div class="mo-card-body">
+
+          <!-- Order Items -->
+          <div class="mo-items">
+            <div th:each="item : ${order.orderItems}" class="mo-item">
+              <div class="mo-item-img">
+                <img th:src="${item.product.imageUrl} ?: '/images/placeholder.jpg'"
+                     th:alt="${item.product.name}"/>
+              </div>
+              <div class="mo-item-info">
+                <div class="mo-item-name" th:text="${item.product.name}">Product</div>
+                <div class="mo-item-qty"  th:text="'Qty: ' + ${item.quantity}">Qty: 1</div>
+              </div>
+              <div class="mo-item-price"
+                   th:text="'$' + ${#numbers.formatDecimal(item.totalPrice, 1, 2)}">$0.00</div>
+            </div>
+          </div>
+
+          <!-- Card Footer -->
+          <div class="mo-card-footer">
+
+            <div class="mo-payment-info">
+              <span class="mo-payment-label">
+                <i class="fas fa-credit-card"></i> Payment
+              </span>
+              <span th:class="'mo-payment-status ' + (${order.paymentStatus.name() == 'PAID'} ? 'paid' : 'unpaid')"
+                    th:text="${order.paymentStatus}">PENDING</span>
+            </div>
+
+            <div class="mo-footer-right">
+              <div class="mo-total-wrap">
+                <span class="mo-total-label">Order Total</span>
+                <span class="mo-total-amount"
+                      th:text="'$' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}">$0.00</span>
+              </div>
+              <a th:href="@{/orders/{id}(id=${order.id})}" class="mo-btn-detail">
+                View Details <i class="fas fa-chevron-right"></i>
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div th:replace="~{fragments/layout :: brand-directory}"></div>
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>
