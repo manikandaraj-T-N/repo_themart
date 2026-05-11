@@ -22,108 +22,134 @@ import org.springframework.web.multipart.MultipartFile;
 import com.themart.model.Product;
 import com.themart.repository.CategoryRepository;
 import com.themart.repository.ProductRepository;
+import com.themart.service.CloudinaryService;
 
 @Controller
 @RequestMapping("/admin/products")
 public class AdminProductController {
 
-    @Autowired private ProductRepository  productRepo;
+    @Autowired private ProductRepository productRepo;
     @Autowired private CategoryRepository categoryRepo;
+    @Autowired private CloudinaryService cloudinaryService; // ✅ ADD
 
     // ── List all products ──────────────────────────────────
     @GetMapping
     public String listProducts(Model model) {
         model.addAttribute("products", productRepo.findAll());
-        return "admin/products";          // templates/admin/products.html
+        return "admin/products";
     }
 
     // ── Show Add form ──────────────────────────────────────
     @GetMapping("/new")
     public String showAddForm(Model model) {
-        model.addAttribute("product",    new Product());
+        model.addAttribute("product", new Product());
         model.addAttribute("categories", categoryRepo.findAll());
-        return "admin/product-form";      // templates/admin/product-form.html
+        return "admin/product-form";
     }
 
     // ── Show Edit form ─────────────────────────────────────
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         Product product = productRepo.findById(id)
-            .orElseThrow(() -> new RuntimeException("Product not found"));
-        model.addAttribute("product",    product);
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        model.addAttribute("product", product);
         model.addAttribute("categories", categoryRepo.findAll());
+
         return "admin/product-form";
     }
 
     // ── Save (Add or Update) ───────────────────────────────
-@PostMapping("/save")
-public String saveProduct(
-        @ModelAttribute Product product,
-        @RequestParam(value = "imageFile",  required = false) MultipartFile imageFile,
-        @RequestParam(value = "categoryId", required = false) Long categoryId,
-        @RequestParam(value = "isFeatured", required = false) Boolean isFeatured,
-        @RequestParam(value = "isOrganic",  required = false) Boolean isOrganic,
-        @RequestParam(value = "isActive",   required = false) Boolean isActive) throws IOException {
+    @PostMapping("/save")
+    public String saveProduct(
+            @ModelAttribute Product product,
+            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+            @RequestParam(value = "categoryId", required = false) Long categoryId,
+            @RequestParam(value = "isFeatured", required = false) Boolean isFeatured,
+            @RequestParam(value = "isOrganic", required = false) Boolean isOrganic,
+            @RequestParam(value = "isActive", required = false) Boolean isActive
+    ) throws IOException {
 
-    // ── Checkboxes (null when unchecked) ──
-    product.setIsFeatured(isFeatured != null);
-    product.setIsOrganic(isOrganic   != null);
-    product.setIsActive(isActive     != null);
+        // ── Checkboxes ─────────────────────────────
+        product.setIsFeatured(isFeatured != null);
+        product.setIsOrganic(isOrganic != null);
+        product.setIsActive(isActive != null);
 
-    // ── Discount null safe ──
-    if (product.getDiscountPercentage() == null) {
-        product.setDiscountPercentage(0);
-    }
+        // ── Discount null safe ────────────────────
+        if (product.getDiscountPercentage() == null) {
+            product.setDiscountPercentage(0);
+        }
 
-    // ── Stock null safe ──
-    if (product.getStockQuantity() == null) {
-        product.setStockQuantity(0);
-    }
+        // ── Stock null safe ───────────────────────
+        if (product.getStockQuantity() == null) {
+            product.setStockQuantity(0);
+        }
 
-    // ── Category + Auto-set gender from category ──        // ← REPLACED
-    if (categoryId != null) {
-        categoryRepo.findById(categoryId).ifPresent(cat -> {
-            product.setCategory(cat);
-            if (cat.getGender() != null && !cat.getGender().isBlank()) {
-                product.setGender(cat.getGender());
-            } else {
-                product.setGender("unisex");
+        // ── Category + Gender ─────────────────────
+        if (categoryId != null) {
+            categoryRepo.findById(categoryId).ifPresent(cat -> {
+                product.setCategory(cat);
+
+                if (cat.getGender() != null && !cat.getGender().isBlank()) {
+                    product.setGender(cat.getGender());
+                } else {
+                    product.setGender("unisex");
+                }
+            });
+        }
+
+        // ── Gender fallback ───────────────────────
+        if (product.getGender() == null || product.getGender().isBlank()) {
+            product.setGender("unisex");
+        }
+
+        // ── Cloudinary Image Upload ───────────────
+        if (imageFile != null && !imageFile.isEmpty()) {
+
+            // Validate size
+            if (imageFile.getSize() > 5 * 1024 * 1024) {
+                throw new IllegalArgumentException("Image must be under 5MB.");
             }
-        });
-    }
 
-    // ── Gender fallback (if no category or category has no gender) ──
-    if (product.getGender() == null || product.getGender().isBlank()) {
-        product.setGender("unisex");
-    }
+            // Validate extension
+            String originalName = imageFile.getOriginalFilename();
 
-    // ── Image Upload ──
-    if (imageFile != null && !imageFile.isEmpty()) {
+            String ext = originalName != null
+                    ? originalName.substring(originalName.lastIndexOf('.')).toLowerCase()
+                    : ".jpg";
 
-        if (imageFile.getSize() > 5 * 1024 * 1024) {
-            throw new IllegalArgumentException("Image must be under 5MB.");
+            if (!List.of(".jpg", ".jpeg", ".png", ".webp").contains(ext)) {
+                throw new IllegalArgumentException(
+                        "Only JPG, PNG, or WEBP images are allowed."
+                );
+            }
+
+            // Delete old image when editing
+            if (product.getId() != null) {
+                productRepo.findById(product.getId()).ifPresent(existing -> {
+                    try {
+                        if (existing.getImageUrl() != null &&
+                                !existing.getImageUrl().isBlank()) {
+
+                            cloudinaryService.deleteImage(existing.getImageUrl());
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+
+            // Upload new image
+            String imageUrl = cloudinaryService.uploadImage(imageFile);
+
+            // Save URL
+            product.setImageUrl(imageUrl);
         }
 
-        String originalName = imageFile.getOriginalFilename();
-        String ext = originalName != null
-                ? originalName.substring(originalName.lastIndexOf('.')).toLowerCase()
-                : ".jpg";
-        if (!List.of(".jpg", ".jpeg", ".png", ".webp").contains(ext)) {
-            throw new IllegalArgumentException("Only JPG, PNG, or WEBP images are allowed.");
-        }
+        productRepo.save(product);
 
-        String filename   = UUID.randomUUID() + "_" + originalName;
-        Path   uploadPath = Paths.get("images/products").toAbsolutePath().normalize();
-        Files.createDirectories(uploadPath);
-        Files.copy(imageFile.getInputStream(),
-                   uploadPath.resolve(filename),
-                   StandardCopyOption.REPLACE_EXISTING);
-        product.setImageUrl("/images/products/" + filename);
+        return "redirect:/admin/products";
     }
-
-    productRepo.save(product);
-    return "redirect:/admin/products";
-}
 
     // ── Toggle Featured ────────────────────────────────────
     @PostMapping("/toggle-featured/{id}")
@@ -132,13 +158,29 @@ public String saveProduct(
             p.setIsFeatured(!Boolean.TRUE.equals(p.getIsFeatured()));
             productRepo.save(p);
         });
+
         return "redirect:/admin/products";
     }
 
     // ── Delete ─────────────────────────────────────────────
     @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Long id) {
-        productRepo.deleteById(id);
+
+        productRepo.findById(id).ifPresent(product -> {
+
+            try {
+                if (product.getImageUrl() != null &&
+                        !product.getImageUrl().isBlank()) {
+
+                    cloudinaryService.deleteImage(product.getImageUrl());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            productRepo.delete(product);
+        });
+
         return "redirect:/admin/products";
     }
 }

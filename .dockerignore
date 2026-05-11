@@ -1,0 +1,25 @@
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Build output (Maven will rebuild)
+target/
+
+# Environment
+.env
+
+# Local images (using Cloudinary anyway)
+images/
+uploads/
+
+# Docs
+*.md
+HELP.md
+
+# Maven wrapper (not needed inside container)
+.mvn/wrapper/maven-wrapper.jar

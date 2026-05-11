@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.themart.model.Product;
 import com.themart.service.ProductService;
+import com.themart.service.CloudinaryService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +29,7 @@ public class ProductController {
     private String uploadDir;  // → "images/products"
 
     private final ProductService productService;
+    private final CloudinaryService cloudinaryService;
 
     // ── GET all products ──────────────────────────────────────
     @GetMapping
@@ -55,7 +57,9 @@ public class ProductController {
             Path path = Paths.get(uploadPath + filename);
             Files.write(path, file.getBytes());
 
-            String imageUrl = "/images/products/" + filename;
+            // String imageUrl = "/images/products/" + filename;
+            String imageUrl = cloudinaryService.uploadImage(file);
+
             return ResponseEntity.ok(Map.of("success", true, "imageUrl", imageUrl));
 
         } catch (Exception e) {
