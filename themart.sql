@@ -273,10 +273,28 @@ select * from categories;
 
 UPDATE categories SET gender = 'mens' WHERE id = 4;
 
+-- Copy gender from category to product
+UPDATE products p
+JOIN categories c ON p.category_id = c.id
+SET p.gender = c.gender;
 
 
 
 
+
+-- Check total products
+SELECT COUNT(*) as total FROM products;
+
+-- Check gender distribution in products
+SELECT gender, COUNT(*) as count FROM products GROUP BY gender;
+
+-- Check products with NULL gender
+SELECT COUNT(*) FROM products WHERE gender IS NULL;
+
+-- Check if pagination is the issue — how many products per page should show
+SELECT COUNT(*) FROM products WHERE gender = 'womens';
+SELECT COUNT(*) FROM products WHERE gender = 'mens';
+SELECT COUNT(*) FROM products WHERE gender = 'unisex';
 
 
 
@@ -300,3 +318,7 @@ ALTER TABLE categories ADD COLUMN gender VARCHAR(20) DEFAULT 'unisex';
 UPDATE categories SET gender = 'mens'     WHERE LOWER(name) LIKE '%men%' OR LOWER(name) LIKE '%man%' OR LOWER(slug) LIKE '%men%';
 UPDATE categories SET gender = 'womens'   WHERE LOWER(name) LIKE '%women%' OR LOWER(name) LIKE '%woman%' OR LOWER(name) LIKE '%ladies%';
 UPDATE categories SET gender = 'children' WHERE LOWER(name) LIKE '%kid%' OR LOWER(name) LIKE '%child%' OR LOWER(name) LIKE '%baby%';
+
+
+
+SELECT id, name FROM products WHERE category_id = 5 ORDER BY id DESC LIMIT 3;
