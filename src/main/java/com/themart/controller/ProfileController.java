@@ -7,6 +7,7 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.themart.model.User;
 import com.themart.repository.UserRepository;
+import com.themart.service.CloudinaryService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +28,9 @@ import lombok.RequiredArgsConstructor;
 public class ProfileController {
 
     private final UserRepository userRepository;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     // ── GET /profile ──────────────────────────────────────────
     @GetMapping("/profile")
@@ -66,8 +71,7 @@ public class ProfileController {
         return "redirect:/profile";
     }
 
-    // ── POST /profile/upload-image ────────────────────────────
-    // ── POST /profile/upload-image ────────────────────────────
+   
             @PostMapping("/profile/upload-image")
             @ResponseBody
             public Map<String, Object> uploadProfileImage(
@@ -77,18 +81,23 @@ public class ProfileController {
                 Map<String, Object> response = new HashMap<>();
 
                 try {
-                   String uploadDir = System.getProperty("user.dir") + "/images/profiles/";
-                    new java.io.File(uploadDir).mkdirs();
+                //    String uploadDir = System.getProperty("user.dir") + "/images/profiles/";
+                //     new java.io.File(uploadDir).mkdirs();
 
-                    String filename = "user_" + principal.getName().hashCode()
-                            + "_" + System.currentTimeMillis()
-                            + getExtension(file.getOriginalFilename());
+                //     String filename = "user_" + principal.getName().hashCode()
+                //             + "_" + System.currentTimeMillis()
+                //             + getExtension(file.getOriginalFilename());
 
-                    Path path = Paths.get(uploadDir + filename);
-                    Files.write(path, file.getBytes());
+                //     Path path = Paths.get(uploadDir + filename);
+                //     Files.write(path, file.getBytes());
 
-                    // ✅ URL matches /images/profiles/** handler
-                  String imageUrl = "/images/profiles/" + filename;
+                //     // ✅ URL matches /images/profiles/** handler
+                //   String imageUrl = "/images/profiles/" + filename;
+
+
+                 String imageUrl = cloudinaryService.uploadImage(file);
+
+
                     User user = userRepository.findByEmail(principal.getName())
                             .orElseThrow(() -> new RuntimeException("User not found"));
                     user.setProfileImage(imageUrl);
