@@ -1,12 +1,7 @@
 package com.themart.controller;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -127,15 +122,10 @@ public class AdminProductController {
             // Delete old image when editing
             if (product.getId() != null) {
                 productRepo.findById(product.getId()).ifPresent(existing -> {
-                    try {
-                        if (existing.getImageUrl() != null &&
-                                !existing.getImageUrl().isBlank()) {
-
-                            cloudinaryService.deleteImage(existing.getImageUrl());
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                     if (existing.getImageUrl() != null &&
+                !existing.getImageUrl().isBlank()) {
+            cloudinaryService.deleteImage(existing.getImageUrl()); // no try-catch needed
+        }
                 });
             }
 
@@ -158,29 +148,21 @@ public class AdminProductController {
             p.setIsFeatured(!Boolean.TRUE.equals(p.getIsFeatured()));
             productRepo.save(p);
         });
-
         return "redirect:/admin/products";
     }
 
     // ── Delete ─────────────────────────────────────────────
-    @PostMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable Long id) {
+   // Delete product
+@PostMapping("/delete/{id}")
+public String deleteProduct(@PathVariable Long id) {
+    productRepo.findById(id).ifPresent(product -> {
+        if (product.getImageUrl() != null &&
+                !product.getImageUrl().isBlank()) {
+            cloudinaryService.deleteImage(product.getImageUrl()); // no try-catch needed
+        }
+        productRepo.delete(product);
+    });
+    return "redirect:/admin/products";
+}
 
-        productRepo.findById(id).ifPresent(product -> {
-
-            try {
-                if (product.getImageUrl() != null &&
-                        !product.getImageUrl().isBlank()) {
-
-                    cloudinaryService.deleteImage(product.getImageUrl());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            productRepo.delete(product);
-        });
-
-        return "redirect:/admin/products";
-    }
 }
