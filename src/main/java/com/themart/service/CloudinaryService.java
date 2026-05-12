@@ -17,10 +17,10 @@ import java.util.HashMap;
 public class CloudinaryService {
 
     private final Cloudinary cloudinary;
-    
+
 public String uploadImage(MultipartFile file) throws IOException {
     Map<String, Object> options = new HashMap<>();
-    options.put("folder", "themart");
+    options.put("folder", "themart/products"); // ← was "themart"
     
     Map<String, Object> uploadResult = cloudinary.uploader().upload(
         file.getBytes(), options
@@ -28,15 +28,44 @@ public String uploadImage(MultipartFile file) throws IOException {
     return (String) uploadResult.get("secure_url");
 }
 
-public void deleteImage(String imageUrl) throws IOException {
-    String publicId = extractPublicId(imageUrl);
-    cloudinary.uploader().destroy(publicId, new HashMap<>());
+// Add separate method for profile images
+public String uploadProfileImage(MultipartFile file) throws IOException {
+    Map<String, Object> options = new HashMap<>();
+    options.put("folder", "themart/profiles"); // ← profiles folder
+    
+    Map<String, Object> uploadResult = cloudinary.uploader().upload(
+        file.getBytes(), options
+    );
+    return (String) uploadResult.get("secure_url");
 }
 
-    private String extractPublicId(String imageUrl) {
-        String[] parts = imageUrl.split("/");
-        String filename = parts[parts.length - 1];
-        String folder = parts[parts.length - 2];
-        return folder + "/" + filename.split("\\.")[0];
+// Add separate method for category images
+public String uploadCategoryImage(MultipartFile file) throws IOException {
+    Map<String, Object> options = new HashMap<>();
+    options.put("folder", "themart/categories");
+    
+    Map<String, Object> uploadResult = cloudinary.uploader().upload(
+        file.getBytes(), options
+    );
+    return (String) uploadResult.get("secure_url");
+}
+
+
+private String extractPublicId(String imageUrl) {
+    // Handles: /upload/v123/themart/products/filename.jpg
+    // OR:      /upload/themart/products/filename.jpg
+    try {
+        String[] parts = imageUrl.split("/upload/");
+        String afterUpload = parts[1];
+        // Remove version if present (v1234567/)
+        if (afterUpload.startsWith("v") && afterUpload.contains("/")) {
+            afterUpload = afterUpload.substring(afterUpload.indexOf("/") + 1);
+        }
+        // Remove file extension
+        return afterUpload.substring(0, afterUpload.lastIndexOf("."));
+    } catch (Exception e) {
+        return imageUrl;
     }
+}
+
 }

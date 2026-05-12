@@ -1,151 +1,190 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      lang="en">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
 <head>
+  <title>Terms & Conditions - VetriFresh</title>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Terms & Conditions – TheMart</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <link rel="stylesheet" th:href="@{/css/home.css}"/>
-    <link rel="stylesheet" th:href="@{/css/terms.css}"/>
-
+  <link rel="stylesheet" th:href="@{/css/footer.css}"/>
+  <style>
+    .page-hero { background: #f4f6f0; padding: 48px 40px; text-align: center; }
+    .page-hero h1 { color: #1b4332; font-size: 32px; margin-bottom: 8px; }
+    .content-section { max-width: 860px; margin: 48px auto; padding: 0 24px 60px; }
+    .content-section h2 { color: #1b4332; font-size: 20px; margin: 32px 0 10px; }
+    .content-section p { color: #555; font-size: 15px; line-height: 1.8; margin-bottom: 12px; }
+    .content-section ul { color: #555; font-size: 15px; line-height: 1.8; padding-left: 20px; }
+  </style>
 </head>
 <body>
 
-  <div th:replace="~{fragments/layout :: topbar}"></div>
-  <div th:replace="~{fragments/layout :: header}"></div>
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-name">Vetri<span>Fresh</span></div>
+      <div class="logo-tag">Pure · Organic · Fresh</div>
+    </div>
+    <nav>
+      <ul>
+        <li><a th:href="@{/home}">Home</a></li>
+        <li><a th:href="@{/shop}">Shop</a></li>
+        <li><a th:href="@{/blog}">Blog</a></li>
+        <li><a th:href="@{/about}">About Us</a></li>
+        <li><a th:href="@{/contact}">Contact</a></li>
+      </ul>
+    </nav>
+ <div class="header-actions">
+   
+      <!-- wishlist -->
+      <a th:href="@{/wishlist}" style="text-decoration:none;">
+  <button class="icon-btn" title="Wishlist">
+    <i class="far fa-heart"></i>
+    <span class="cart-badge" id="wishlistCount" th:text="${wishlistCount} ?: '0'">0</span>
+  </button>
+  </a>
+      
+      <a th:href="@{/cart}" style="position:relative; text-decoration:none;">
+  <button class="icon-btn" title="Cart">
+    🛒
+    <span class="cart-badge" id="cartCount" th:text="${cartCount} ?: '0'">0</span>
+  </button>
+</a>
 
-  <!-- Breadcrumb -->
-  <div class="breadcrumb">
-    <a th:href="@{/home}">Home</a>
-    <span>›</span>
-    <span style="color:var(--dark);font-weight:600;">Terms &amp; Conditions</span>
+
+    <div class="user-menu-wrap">
+
+  <!-- LOGGED IN -->
+  <div sec:authorize="isAuthenticated()" class="user-menu">
+    <button class="avatar-btn" onclick="toggleUserMenu(event)" title="Account menu">
+      <img th:src="${currentUser?.profileImage != null ? currentUser.profileImage : '/images/profiles/default-avatar.jpg'}"
+           onerror="this.src='/images/profiles/default-avatar.jpg'"
+           class="avatar-img" alt="Profile"/>
+      <span class="avatar-online-dot"></span>
+    </button>
+
+    <div class="user-dropdown" id="userDropdown">
+      <!-- User info header -->
+      <div class="dropdown-header">
+        <img th:src="${currentUser?.profileImage != null ? currentUser.profileImage : '/images/profiles/default-avatar.jpg'}"
+             onerror="this.src='/images/profiles/default-avatar.jpg'"
+             class="dropdown-avatar" alt="Profile"/>
+        <div class="dropdown-user-info">
+          <span class="dropdown-name" sec:authentication="name">User</span>
+          <span class="dropdown-role">Member</span>
+        </div>
+      </div>
+
+      <div class="dropdown-divider"></div>
+
+      <a th:href="@{/profile}" class="dropdown-item">
+        <span class="di-icon"><i class="fas fa-user-circle"></i></span>
+        <span>My Profile</span>
+      </a>
+      <a th:href="@{/orders}" class="dropdown-item">
+        <span class="di-icon"><i class="fas fa-box-open"></i></span>
+        <span>My Orders</span>
+      </a>
+      <a th:href="@{/wishlist}" class="dropdown-item">
+        <span class="di-icon"><i class="fas fa-heart"></i></span>
+        <span>Wishlist</span>
+      </a>
+      <a th:href="@{/cart}" class="dropdown-item">
+        <span class="di-icon"><i class="fas fa-shopping-cart"></i></span>
+        <span>My Cart</span>
+      </a>
+
+      <!-- Admin link — only visible to ADMIN role -->
+      <div sec:authorize="hasRole('ADMIN')">
+        <div class="dropdown-divider"></div>
+        <a th:href="@{/admin/dashboard}" class="dropdown-item dropdown-item-admin">
+          <span class="di-icon"><i class="fas fa-shield-alt"></i></span>
+          <span>Admin Panel</span>
+        </a>
+
+      </div>
+
+      <div class="dropdown-divider"></div>
+
+      <a th:href="@{/logout}" class="dropdown-item dropdown-item-logout">
+        <span class="di-icon"><i class="fas fa-sign-out-alt"></i></span>
+        <span>Logout</span>
+      </a>
+    </div>
   </div>
 
-  <!-- Hero -->
-  <section class="terms-hero">
-    <h1>Terms &amp; <span>Conditions</span></h1>
-    <p>By using TheMart, you agree to the following terms. Please read them carefully before making a purchase.</p>
-  </section>
-
-  <!-- Content -->
-  <div class="terms-content">
-
-    <div class="terms-section">
-      <h2><i class="fas fa-file-alt"></i> Agreement to Terms</h2>
-      <p>By accessing or using TheMart's website and services, you confirm that you are at least 18 years of age and agree to be legally bound by these Terms and Conditions. If you do not agree, please refrain from using our platform.</p>
-      <div class="terms-highlight">
-        These terms apply to all visitors, users, and customers of TheMart. We reserve the right to update these terms at any time. Continued use of the platform after changes constitutes acceptance.
-      </div>
-    </div>
-
-    <div class="terms-section">
-      <h2><i class="fas fa-user-check"></i> Account Registration</h2>
-      <p>To access certain features, you may need to create an account. You are responsible for maintaining the confidentiality of your login credentials.</p>
-      <ul>
-        <li>You must provide accurate and complete information during registration.</li>
-        <li>You are solely responsible for all activity that occurs under your account.</li>
-        <li>Notify us immediately if you suspect unauthorized use of your account.</li>
-        <li>TheMart reserves the right to suspend or terminate accounts that violate these terms.</li>
-      </ul>
-    </div>
-
-    <div class="terms-section">
-      <h2><i class="fas fa-shopping-cart"></i> Orders & Purchases</h2>
-      <p>All orders placed through TheMart are subject to availability and confirmation. We reserve the right to refuse or cancel any order at our discretion.</p>
-      <ul>
-        <li>Prices displayed are in USD and are subject to change without notice.</li>
-        <li>TheMart reserves the right to limit quantities available for purchase.</li>
-        <li>Order confirmation via email does not guarantee product availability.</li>
-        <li>In case of a pricing error, we will notify you and offer a cancellation option.</li>
-      </ul>
-    </div>
-
-    <div class="terms-section">
-      <h2><i class="fas fa-truck"></i> Shipping & Delivery</h2>
-      <p>We aim to deliver all orders promptly and reliably. Delivery times may vary based on location and product availability.</p>
-      <ul>
-        <li>Free shipping is available on orders over $55.</li>
-        <li>Estimated delivery times are not guaranteed and may vary.</li>
-        <li>TheMart is not responsible for delays caused by third-party couriers or customs.</li>
-        <li>Risk of loss passes to you upon delivery to the specified address.</li>
-      </ul>
-    </div>
-
-    <div class="terms-section">
-      <h2><i class="fas fa-undo-alt"></i> Returns & Refunds</h2>
-      <p>We want you to be completely satisfied with your purchase. If you are not happy, we offer a straightforward return process.</p>
-      <ul>
-        <li>Items may be returned within 30 days of delivery in original, unused condition.</li>
-        <li>Return shipping costs are the responsibility of the customer unless the item is defective.</li>
-        <li>Refunds will be processed within 7–10 business days after the returned item is received.</li>
-        <li>Sale items and personalized products are non-refundable.</li>
-      </ul>
-    </div>
-
-    <div class="terms-section">
-      <h2><i class="fas fa-credit-card"></i> Payment Terms</h2>
-      <p>All transactions on TheMart are processed securely. We accept major payment methods including Visa, Mastercard, PayPal, Google Pay, and Amazon Pay.</p>
-      <ul>
-        <li>Payment must be completed at the time of placing an order.</li>
-        <li>TheMart does not store your full card details on our servers.</li>
-        <li>All transactions are encrypted using industry-standard SSL technology.</li>
-        <li>In case of a failed payment, your order will not be confirmed.</li>
-      </ul>
-    </div>
-
-    <div class="terms-section">
-      <h2><i class="fas fa-ban"></i> Prohibited Activities</h2>
-      <p>When using TheMart, you agree not to engage in any of the following activities:</p>
-      <ul>
-        <li>Using the platform for any unlawful or fraudulent purpose.</li>
-        <li>Attempting to gain unauthorized access to our systems or data.</li>
-        <li>Posting or transmitting harmful, offensive, or misleading content.</li>
-        <li>Scraping, copying, or reproducing any part of the website without permission.</li>
-        <li>Impersonating another person or misrepresenting your affiliation.</li>
-      </ul>
-    </div>
-
-    <div class="terms-section">
-      <h2><i class="fas fa-exclamation-triangle"></i> Disclaimer of Warranties</h2>
-      <p>TheMart provides its services on an "as is" and "as available" basis. We make no warranties, express or implied, regarding the accuracy, reliability, or availability of our website or products.</p>
-      <p>Product images and descriptions are provided for informational purposes only and may differ slightly from the actual product.</p>
-    </div>
-
-    <div class="terms-section">
-      <h2><i class="fas fa-gavel"></i> Governing Law</h2>
-      <p>These Terms and Conditions are governed by the laws of India. Any disputes arising out of or in connection with these terms shall be subject to the exclusive jurisdiction of the courts of Coimbatore, Tamil Nadu, India.</p>
-    </div>
-
-    <div class="terms-section">
-      <h2><i class="fas fa-envelope"></i> Contact Us</h2>
-      <p>If you have any questions about these Terms and Conditions, please reach out to us:</p>
-      <div class="contact-box">
-        <span>
-          <i class="fas fa-envelope" style="color:var(--pink);margin-right:8px;"></i>
-          <a href="mailto:support@themart.com">support@themart.com</a>
-        </span>
-        <span>
-          <i class="fas fa-phone-alt" style="color:var(--pink);margin-right:8px;"></i>
-          <a href="tel:+919876543210">+91 98765 43210</a>
-        </span>
-        <span>
-          <i class="fas fa-map-marker-alt" style="color:var(--pink);margin-right:8px;"></i>
-          123 Fashion Street, Coimbatore, Tamil Nadu, India — 641001
-        </span>
-      </div>
-    </div>
-
-    <div class="terms-updated">
-      Last updated: May 2026 &nbsp;·&nbsp; © 2026 TheMart Pvt. Ltd. All rights reserved.
-    </div>
-
+  <!-- NOT LOGGED IN -->
+  <div sec:authorize="!isAuthenticated()">
+    <a th:href="@{/login}" class="login-pill">
+      <i class="fas fa-user"></i>
+      <span>Login</span>
+    </a>
   </div>
 
-  <div th:replace="~{fragments/layout :: brand-directory}"></div>
-  <div th:replace="~{fragments/layout :: footer}"></div>
+</div>
+
+    </div>
+    
+  </div>
+</header>
+
+<div class="page-hero">
+  <h1>Terms &amp; Conditions</h1>
+  <p>Last updated: April 2025</p>
+</div>
+
+<div class="content-section">
+  <h2>1. Acceptance of Terms</h2>
+  <p>By accessing and using VetriFresh, you accept and agree to be bound by these Terms and Conditions. If you do not agree, please do not use our service.</p>
+
+  <h2>2. Use of the Platform</h2>
+  <p>You agree to use this platform only for lawful purposes and in a manner that does not infringe the rights of others.</p>
+  <ul>
+    <li>You must be at least 18 years old to create an account.</li>
+    <li>You are responsible for maintaining the confidentiality of your account credentials.</li>
+    <li>You must not misuse or attempt to gain unauthorized access to our systems.</li>
+  </ul>
+
+  <h2>3. Orders and Payments</h2>
+  <p>All orders placed are subject to product availability. We reserve the right to cancel any order at our discretion. Payment must be completed before dispatch unless cash on delivery is selected.</p>
+
+  <h2>4. Returns and Refunds</h2>
+  <p>Damaged or incorrect products may be returned within 24 hours of delivery. Refunds are processed within 5–7 business days to the original payment method.</p>
+
+  <h2>5. Limitation of Liability</h2>
+  <p>VetriFresh shall not be liable for any indirect, incidental, or consequential damages arising from the use of our platform or products.</p>
+
+  <h2>6. Changes to Terms</h2>
+  <p>We reserve the right to update these terms at any time. Continued use of the platform after changes constitutes acceptance of the new terms.</p>
+
+  <h2>7. Contact</h2>
+  <p>For any questions regarding these terms, please contact us at vetrifresh@gmail.com.</p>
+</div>
+
+<th:block th:insert="~{fragments/footer :: footer}"></th:block>
+
+<script>
+
+function toggleUserMenu(e) {
+  e.stopPropagation();
+  document.getElementById('userDropdown').classList.toggle('open');
+}
+
+// Close on outside click
+document.addEventListener('click', function(e) {
+  const dropdown = document.getElementById('userDropdown');
+  if (dropdown && !e.target.closest('.user-menu')) {
+    dropdown.classList.remove('open');
+  }
+});
+
+// Close on Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const dropdown = document.getElementById('userDropdown');
+    if (dropdown) dropdown.classList.remove('open');
+  }
+});
+</script>
 
 </body>
 </html>

@@ -95,7 +95,7 @@ public class ProfileController {
                 //   String imageUrl = "/images/profiles/" + filename;
 
 
-                 String imageUrl = cloudinaryService.uploadImage(file);
+             String imageUrl = cloudinaryService.uploadProfileImage(file); // ← was uploadImage
 
 
                     User user = userRepository.findByEmail(principal.getName())
